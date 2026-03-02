@@ -40,13 +40,13 @@ This skill guides the Cursor AI agent through a 10-phase quality check of your L
 ```bash
 # Clone to your Cursor skills directory
 cd ~/.cursor/skills
-git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 On Windows:
 ```powershell
 cd $env:USERPROFILE\.cursor\skills
-git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 #### Option 2: Project Skill (shared with team)
@@ -56,7 +56,7 @@ git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
 cd your-paper-project
 mkdir -p .cursor/skills
 cd .cursor/skills
-git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 ### Usage
@@ -168,13 +168,13 @@ MIT License - see [LICENSE](LICENSE)
 ```powershell
 # Windows
 cd $env:USERPROFILE\.cursor\skills
-git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 ```bash
 # macOS / Linux
 cd ~/.cursor/skills
-git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 #### 方式二：项目 Skill（与团队共享）
@@ -183,7 +183,7 @@ git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
 cd 你的论文项目目录
 mkdir -p .cursor/skills
 cd .cursor/skills
-git clone https://github.com/YOUR_USERNAME/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 ### 使用方法
