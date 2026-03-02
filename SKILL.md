@@ -479,12 +479,12 @@ Verify the introduction follows the three-move structure:
 
 ### 8e. Section-Specific Structure
 
-- [ ] **Related Work**: Organized thematically + ends with gap summary
-- [ ] **Method**: All symbols defined + algorithm/pseudocode included
-- [ ] **Experiments**: Baselines use published defaults (stated explicitly) + runs averaged
-- [ ] **Discussion**: Includes result interpretation, not just number repetition
-- [ ] **Limitations**: Present (in Discussion or Conclusion) — specific, not vague
-- [ ] **Conclusion ≠ Abstract**: Conclusion synthesizes, not just summarizes
+- [ ] **Related Work**: Organized thematically (not laundry list) + each theme has summary→limitations→citations + ends with gap summary paragraph that directly motivates the proposed method
+- [ ] **Method**: All symbols defined at first use + notation table (if >10 symbols) + method overview figure + core intuition in plain language + algorithm pseudocode + design choice justifications + time/space complexity analysis
+- [ ] **Experiments**: Baselines use published defaults (stated explicitly) + runs averaged with std + dataset statistics table + metrics mathematically defined + results interpreted (not just presented) + ablation study + fair comparison (same hardware, same splits, same parameters)
+- [ ] **Discussion**: Result interpretation (not repetition) + comparison with ≥2 prior methods + mechanism explanation (WHY it works) + ≥3 specific limitations + broader implications
+- [ ] **Limitations**: Present (in Discussion or Conclusion) — specific, not vague; each limitation names a concrete dataset, scenario, or parameter constraint
+- [ ] **Conclusion**: Multi-paragraph (2–4) + strongest takeaway first + NOT a copy of the abstract + answers Introduction's research question + specific future work + no new information + no overclaiming
 
 ### 8f. Terminology Consistency
 

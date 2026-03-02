@@ -172,35 +172,62 @@ rg '0\.\d+' paper.tex               # Decimal numbers (check precision consisten
 ### Phase 8: Content Structure
 
 ```bash
-# Abstract
-rg -c '\w+' paper.tex                # Approximate word count (refine by extracting abstract block)
+# ── Abstract ──
 rg '\\begin\{abstract\}' paper.tex   # Locate abstract
 rg '\\cite' paper.tex | head         # Check if citations appear in abstract (should not)
+rg -in 'with the (rapid|exponential|increasing)' paper.tex  # Generic AI-style abstract opening
+rg -in 'in recent years' paper.tex   # Generic abstract opening
 
-# Introduction structure (CARS model)
+# ── Introduction (CARS Model) ──
 rg '\\section\{Introduction' paper.tex    # Locate introduction
+rg -in 'however|despite|although|while' paper.tex  # Move 2 gap indicators
+rg -in 'this paper proposes|this paper presents|this paper introduces' paper.tex  # Move 3 statement
 rg '\\begin\{enumerate\}' paper.tex       # Locate contributions list
 rg 'remainder of this paper' paper.tex    # Locate paper outline paragraph
+rg -in 'the main contributions' paper.tex # Locate contribution preamble
 
-# Keywords
+# ── Related Work ──
+rg '\\section\{Related' paper.tex     # Locate Related Work
+rg '\\subsection\{' paper.tex         # Check thematic organization (subsections = themes)
+rg -in 'gap|limitation|however|lack' paper.tex  # Check for gap summary at end
+
+# ── Method / Algorithm ──
+rg '\\section\{.*[Mm]ethod\|\\section\{.*[Aa]lgorithm\|\\section\{.*[Pp]roposed' paper.tex
+rg '\\begin\{algorithm\}' paper.tex   # Locate pseudocode blocks
+rg '\\begin\{definition\}' paper.tex  # Locate formal definitions
+rg -in 'definition \d' paper.tex      # Check definition numbering
+rg -in 'theorem|lemma|proposition' paper.tex  # Locate proofs
+rg -in 'time complexity|space complexity' paper.tex  # Check complexity analysis
+
+# ── Experiments ──
+rg '\\section\{[Ee]xperiment' paper.tex   # Locate experiments
+rg -in 'default.*parameter\|published.*setting\|original.*parameter' paper.tex  # Fair comparison statement
+rg -in 'averaged over|mean of|across.*runs' paper.tex  # Multiple runs statement
+rg -in 'ablation' paper.tex               # Check ablation study presence
+rg -in 'sensitivity|parameter.*analysis' paper.tex  # Parameter sensitivity
+rg -in 'hardware|GPU|CPU|memory' paper.tex # Hardware info
+rg -in 'reproduce|reproducib' paper.tex   # Reproducibility statement
+
+# ── Discussion ──
+rg '\\section\{[Dd]iscussion' paper.tex   # Locate discussion
+rg -in 'outperforms because\|reason.*is\|explains\|due to\|attributed to' paper.tex  # Mechanism explanation
+rg -in 'prior work\|previous.*study\|compared (with|to).*existing' paper.tex  # Comparison with prior work
+
+# ── Limitations ──
+rg -in 'limitation' paper.tex        # Check if limitations are discussed
+rg -in 'future work' paper.tex       # Check future work mentions
+rg -in 'however.*only.*dataset\|limited to\|not.*tested\|unverified' paper.tex  # Specific limitations
+
+# ── Conclusion ──
+rg '\\section\{[Cc]onclusion' paper.tex  # Locate conclusion
+rg -in 'paving the way\|paves the way\|future advancements' paper.tex  # Vague future work
+rg -in 'transform\|revolution\|groundbreak\|paradigm' paper.tex  # Overclaiming
+
+# ── Keywords ──
 rg '\\begin\{keyword\}' paper.tex    # Locate keywords block
 rg '\\sep' paper.tex                 # Count keyword separators (count+1 = number of keywords)
 
-# Paragraph length (detect giant paragraphs >250 words)
-# Manual check: look for text blocks without blank lines that span many lines
-
-# Sentence length (detect >35 word sentences)
-# Manual check: look for sentences spanning 3+ lines without period
-
-# Conclusion structure
-rg '\\section\{Conclusion' paper.tex  # Locate conclusion
-# Check if conclusion is single paragraph (no blank lines between \section{Conclusion} and next \section or \end)
-
-# Limitations
-rg -in 'limitation' paper.tex        # Check if limitations are discussed
-rg -in 'future work' paper.tex       # Check future work mentions
-
-# Cross-section consistency
+# ── Cross-Section Consistency ──
 rg '\\label\{' paper.tex             # List all labels
 rg '\\ref\{' paper.tex               # List all references (every label should be referenced)
 ```
@@ -258,3 +285,16 @@ Based on analysis of actual submissions, these are the most frequently occurring
 27. **Sentences >35 words** — comprehension drops, reviewers flag readability
 28. **Paragraphs >250 words** — wall of text, should be split
 29. **Related Work ends without gap summary** — no synthesis linking to proposed method
+30. **Related Work is a "laundry list"** — one paragraph per paper with no thematic synthesis
+31. **Method missing pseudocode** — text description alone is insufficient for reproduction
+32. **Method symbols inconsistent** — "d" means hash count in Method but depth in Experiments
+33. **Method missing overview figure** — no visual pipeline/architecture diagram
+34. **Experiments no multiple runs** — single run result with no error bars or std
+35. **Experiments unfair comparison** — your method re-tuned but baselines use suboptimal settings
+36. **Experiments no ablation study** — reviewer cannot tell which component helps
+37. **Experiments numbers without interpretation** — results table exists but text just restates numbers
+38. **Discussion just repeats Results** — "SP-SBEAD achieves 0.998" without explaining WHY
+39. **Discussion no mechanism explanation** — no analysis of why the method works
+40. **Conclusion introduces new claims** — information that doesn't appear earlier in the paper
+41. **Conclusion overclaims** — "transforms the field" without extraordinary evidence
+42. **Conclusion no specific future work** — "explore future directions" without concrete plans
