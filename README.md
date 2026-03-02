@@ -1,4 +1,4 @@
-# Paper Pre-Submission Quality Check (Cursor Agent Skill)
+# Paper Pre-Submission Quality Check
 
 [English](#english) | [中文](#中文)
 
@@ -6,11 +6,22 @@
 
 ## English
 
-A comprehensive Cursor Agent Skill for systematic quality inspection of academic LaTeX papers before journal/conference submission.
+A systematic, 10-phase quality inspection workflow for academic LaTeX papers before journal/conference submission. Works with **Cursor, Claude Code, OpenAI Codex, GitHub Copilot, Windsurf**, and any AI coding assistant that reads markdown instructions.
+
+### Supported Platforms
+
+| Platform | Installation | How It Works |
+|----------|-------------|--------------|
+| **Cursor** | Clone to `~/.cursor/skills/` | Auto-detected as Agent Skill |
+| **Claude Code** | Reference in `CLAUDE.md` | Loaded as project instructions |
+| **OpenAI Codex** | Reference in `AGENTS.md` | Loaded as agent instructions |
+| **GitHub Copilot** | Reference in `.github/copilot-instructions.md` | Loaded as custom instructions |
+| **Windsurf** | Clone to `~/.codeium/windsurf/skills/` | Auto-detected as Skill |
+| **Any LLM** | Copy SKILL.md content to system prompt | Direct instruction injection |
 
 ### What It Does
 
-This skill guides the Cursor AI agent through a 10-phase quality check of your LaTeX paper:
+This skill guides the AI agent through a 10-phase quality check of your LaTeX paper:
 
 | Phase | Check | Examples |
 |-------|-------|---------|
@@ -35,41 +46,137 @@ This skill guides the Cursor AI agent through a 10-phase quality check of your L
 
 ### Installation
 
-#### Option 1: Personal Skill (all projects)
+#### Cursor
 
 ```bash
-# Clone to your Cursor skills directory
+# macOS / Linux
 cd ~/.cursor/skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-On Windows:
 ```powershell
+# Windows
 cd $env:USERPROFILE\.cursor\skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-#### Option 2: Project Skill (shared with team)
+After cloning, restart Cursor. The skill will be auto-detected.
+
+#### Claude Code
+
+Clone the repo into your project, then reference it in your `CLAUDE.md`:
 
 ```bash
-# Clone into your project's .cursor/skills directory
 cd your-paper-project
-mkdir -p .cursor/skills
-cd .cursor/skills
+git clone https://github.com/zhousodo/paper-submission-check.git .claude/skills/paper-submission-check
+```
+
+Add to your project's `CLAUDE.md`:
+
+```markdown
+## Paper Quality Check
+
+When asked to review a paper, follow the workflow in
+.claude/skills/paper-submission-check/SKILL.md
+
+Reference databases:
+- AI phrase detection: .claude/skills/paper-submission-check/ai-phrases.md
+- Publisher checklists: .claude/skills/paper-submission-check/checklist.md
+```
+
+Or simply reference the files directly in conversation:
+
+```
+Read .claude/skills/paper-submission-check/SKILL.md and check my paper.tex
+```
+
+#### OpenAI Codex
+
+Clone the repo into your project, then reference it in your `AGENTS.md`:
+
+```bash
+cd your-paper-project
+git clone https://github.com/zhousodo/paper-submission-check.git .codex/paper-submission-check
+```
+
+Add to your project's `AGENTS.md`:
+
+```markdown
+## Paper Quality Check
+
+When reviewing LaTeX papers before submission, follow the 10-phase workflow in
+.codex/paper-submission-check/SKILL.md
+
+Additional references:
+- .codex/paper-submission-check/ai-phrases.md
+- .codex/paper-submission-check/checklist.md
+```
+
+#### GitHub Copilot
+
+Add to `.github/copilot-instructions.md`:
+
+```markdown
+## Paper Review Instructions
+
+When asked to check or review a LaTeX paper, follow the workflow described in:
+paper-submission-check/SKILL.md
+
+Use paper-submission-check/ai-phrases.md for AI-style detection
+and paper-submission-check/checklist.md for publisher-specific requirements.
+```
+
+#### Windsurf
+
+```bash
+# macOS / Linux
+cd ~/.codeium/windsurf/skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-### Usage
-
-In Cursor, simply ask the agent:
-
-```
-@SKILL.md Please check my paper before submission.
+```powershell
+# Windows
+cd $env:USERPROFILE\.codeium\windsurf\skills
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-Or the agent will automatically detect when you need paper checking if you mention keywords like "paper check", "proofreading", "submission preparation", or "quality review".
+#### Any Other LLM (ChatGPT, Gemini, etc.)
 
-**Example prompts:**
+Copy the content of `SKILL.md` into your system prompt or conversation, then ask:
+
+```
+Based on the above instructions, check my paper: [paste LaTeX content]
+```
+
+### Usage Examples
+
+#### Cursor
+
+```
+@SKILL.md Please check my paper @paper.tex and @refs.bib before submission.
+```
+
+The agent auto-detects the skill when you mention "paper check", "proofreading", "submission preparation", or "quality review".
+
+#### Claude Code
+
+```bash
+claude "Read paper-submission-check/SKILL.md, then check my paper.tex and my.bib for submission to Elsevier"
+```
+
+Or in interactive mode:
+
+```
+> Check paper.tex following the workflow in paper-submission-check/SKILL.md
+```
+
+#### OpenAI Codex
+
+```bash
+codex "Review my paper.tex using the paper-submission-check workflow before I submit to IEEE"
+```
+
+#### General Prompts (any platform)
 
 ```
 Check my paper @paper.tex and @refs.bib before submitting to Elsevier.
@@ -134,11 +241,22 @@ MIT License - see [LICENSE](LICENSE)
 
 ## 中文
 
-一个全面的 Cursor Agent Skill，用于学术 LaTeX 论文投稿前的系统化质量检查。
+一个系统化的 10 阶段学术 LaTeX 论文投稿前质量检查工作流。支持 **Cursor、Claude Code、OpenAI Codex、GitHub Copilot、Windsurf** 及所有能读取 Markdown 指令的 AI 编程助手。
+
+### 支持的平台
+
+| 平台 | 安装方式 | 工作原理 |
+|------|---------|---------|
+| **Cursor** | 克隆到 `~/.cursor/skills/` | 自动识别为 Agent Skill |
+| **Claude Code** | 在 `CLAUDE.md` 中引用 | 作为项目指令加载 |
+| **OpenAI Codex** | 在 `AGENTS.md` 中引用 | 作为代理指令加载 |
+| **GitHub Copilot** | 在 `.github/copilot-instructions.md` 中引用 | 作为自定义指令加载 |
+| **Windsurf** | 克隆到 `~/.codeium/windsurf/skills/` | 自动识别为 Skill |
+| **其他 LLM** | 将 SKILL.md 内容复制到系统提示词 | 直接注入指令 |
 
 ### 功能说明
 
-此 skill 引导 Cursor AI 代理对 LaTeX 论文进行 10 阶段质量检查：
+此 skill 引导 AI 代理对 LaTeX 论文进行 10 阶段质量检查：
 
 | 阶段 | 检查项 | 说明 |
 |------|--------|------|
@@ -163,7 +281,7 @@ MIT License - see [LICENSE](LICENSE)
 
 ### 安装方法
 
-#### 方式一：个人 Skill（所有项目可用）
+#### Cursor
 
 ```powershell
 # Windows
@@ -177,37 +295,73 @@ cd ~/.cursor/skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-#### 方式二：项目 Skill（与团队共享）
+克隆后重启 Cursor，skill 会自动识别。
+
+#### Claude Code
+
+将仓库克隆到项目中，然后在 `CLAUDE.md` 中引用：
 
 ```bash
 cd 你的论文项目目录
-mkdir -p .cursor/skills
-cd .cursor/skills
-git clone https://github.com/zhousodo/paper-submission-check.git
+git clone https://github.com/zhousodo/paper-submission-check.git .claude/skills/paper-submission-check
+```
+
+在 `CLAUDE.md` 中添加：
+
+```markdown
+## 论文质量检查
+
+当被要求审查论文时，遵循 .claude/skills/paper-submission-check/SKILL.md 中的工作流。
+参考数据库：
+- AI 短语检测：.claude/skills/paper-submission-check/ai-phrases.md
+- 出版商清单：.claude/skills/paper-submission-check/checklist.md
+```
+
+#### OpenAI Codex
+
+克隆到项目中，在 `AGENTS.md` 中引用：
+
+```bash
+cd 你的论文项目目录
+git clone https://github.com/zhousodo/paper-submission-check.git .codex/paper-submission-check
+```
+
+在 `AGENTS.md` 中添加：
+
+```markdown
+## 论文质量检查
+
+审查 LaTeX 论文时，遵循 .codex/paper-submission-check/SKILL.md 中的 10 阶段工作流。
+```
+
+#### 其他 LLM（ChatGPT、Gemini 等）
+
+将 `SKILL.md` 的内容复制到系统提示词或对话中，然后提问：
+
+```
+根据上述指令，检查我的论文：[粘贴 LaTeX 内容]
 ```
 
 ### 使用方法
 
-在 Cursor 中直接请求代理：
+#### Cursor
 
 ```
-@SKILL.md 请帮我检查论文，准备投稿。
+@SKILL.md 请帮我检查论文 @paper.tex 和 @refs.bib，准备投稿。
 ```
 
-或者代理会在你提到"论文检查"、"投稿准备"、"质量审查"等关键词时自动触发。
+提到"论文检查"、"投稿准备"、"质量审查"等关键词时会自动触发。
 
-**示例提示词：**
+#### Claude Code
 
-```
-帮我检查 @paper.tex 和 @refs.bib，准备投稿到 Elsevier 期刊。
-```
-
-```
-对 @manuscript.tex 进行投稿前质量检查。
+```bash
+claude "读取 paper-submission-check/SKILL.md，然后检查 paper.tex 和 my.bib，准备投稿到 Elsevier"
 ```
 
-```
-帮我审查 @paper.tex 中的 AI 风格问题。
+#### OpenAI Codex
+
+```bash
+codex "使用 paper-submission-check 工作流审查 paper.tex，准备投稿到 IEEE"
 ```
 
 ### 贡献
