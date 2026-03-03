@@ -168,6 +168,95 @@ The main contributions of this paper are as follows:
 
 ---
 
+## Example 7: Structural Elements (Direct Replacement, Phase 0s)
+
+Structural/visual elements are shared between Chinese and English — replace in-place with NO bilingual pairing. These are word-level mappings where bilingual comparison adds no value and would break layout.
+
+### Theorem Environment Names
+
+```latex
+% Before (Chinese)
+\newtheorem{theorem}{定理}
+\newtheorem{proposition}[theorem]{命题}
+\theoremstyle{remark}
+\newtheorem{remarkenv}[theorem]{注记}
+
+% After (English — direct replacement)
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remarkenv}[theorem]{Remark}
+```
+
+### TikZ Node Labels
+
+```latex
+% Before (Chinese)
+\node[data] (input) {事件序列 $S_i$};
+\node[sel]  (selector) {选择器 $g_\phi$\\Gumbel + Top-$k$\\STE 门控};
+\node[view] (fullpool) {全视图池化\\$\mathbf{z}_{\text{full}}$};
+\node[below=0.08cm of ldet, font=\scriptsize] {更新 $\theta_{\text{enc}},\theta_{\text{cls}}$};
+
+% After (English — direct replacement)
+\node[data] (input) {Event Seq.\ $S_i$};
+\node[sel]  (selector) {Selector $g_\phi$\\Gumbel + Top-$k$\\STE Gating};
+\node[view] (fullpool) {Full-View Pool\\$\mathbf{z}_{\text{full}}$};
+\node[below=0.08cm of ldet, font=\scriptsize] {Update $\theta_{\text{enc}},\theta_{\text{cls}}$};
+```
+
+### Table Headers and Cells
+
+```latex
+% Before
+\begin{tabular}{ll}
+\toprule
+符号 & 含义 \\
+\midrule
+$S_i$ & 实体 $i$ 的事件序列 \\
+$Y_i$ & 实体级标签 \\
+
+% After
+\begin{tabular}{ll}
+\toprule
+Symbol & Description \\
+\midrule
+$S_i$ & Event sequence of entity $i$ \\
+$Y_i$ & Entity-level label \\
+```
+
+### Algorithm Pseudocode
+
+```latex
+% Before
+\caption{HARP 单 epoch 训练}
+\REQUIRE 训练集 $\mathcal{D}$，编码器 $\theta_{\text{enc}}$，分类器 $\theta_{\text{cls}}$，选择器 $\phi$，学习率 $\eta$
+\STATE \textbf{// 特征提取与共享编码}
+\STATE $X \leftarrow \text{FeatureExtract}(\{S_i\})$ \hfill $\triangleright$ mini-batch 事件特征序列
+
+% After
+\caption{HARP: Single-Epoch Training}
+\REQUIRE Training set $\mathcal{D}$, encoder $\theta_{\text{enc}}$, classifier $\theta_{\text{cls}}$, selector $\phi$, learning rate $\eta$
+\STATE \textbf{// Feature extraction and shared encoding}
+\STATE $X \leftarrow \text{FeatureExtract}(\{S_i\})$ \hfill $\triangleright$ mini-batch event feature sequences
+```
+
+### pgfplots Axis Labels and Titles
+
+```latex
+% Before
+title={(a) 学习率},
+ylabel={相对 HARP 的差距 (\%)},
+\legend{AUC, AP, F1}   % legend entries already in English — no change needed
+
+% After
+title={(a) Learning Rate},
+ylabel={Gap relative to HARP (\%)},
+```
+
+**Key principle**: Equations, variable names, and mathematical notation are language-neutral and need no translation. Only translate the natural-language parts.
+
+---
+
 ## Common Transformation Patterns Summary
 
 | Chinese Pattern | English Transformation |

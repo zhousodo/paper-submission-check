@@ -23,6 +23,7 @@ Before any rewrite, lock these invariants:
 ```
 Polishing Progress:
 - [ ] Phase 0: Pre-Analysis (scope lock, language, venue, terminology, bilingual scaffolding)
+- [ ] Phase 0s: Structural Replacement (title, theorem names, keywords, TikZ labels, table headers, algorithm text, pgfplots labels — direct EN replacement, no bilingual pairing)
 - [ ] Phase 1: Title & Abstract
 - [ ] Phase 2: Introduction
 - [ ] Phase 3: Related Work
@@ -163,7 +164,31 @@ The following subsections detail each component.
 \paragraph{Summary and positioning.} \zhinline{小结与定位。}
 ```
 
-**Compile sanity check**: After adding bilingual scaffolding, compile once to verify no caption/macro errors before batch polishing.
+**Structural elements: direct replacement, NO bilingual pairing**. The following elements are shared between Chinese and English modes — replace Chinese content in-place with English (the translation is word-level and unambiguous, so bilingual comparison adds no value and would break layout):
+
+| Element | What to Replace | Example |
+|---------|----------------|---------|
+| Title | `\title{}` content | `HARP: 面向...` → `HARP: Holistic Attribution...` |
+| Theorem names | `\newtheorem{...}{...}` 2nd arg | `{定理}` → `{Theorem}`, `{命题}` → `{Proposition}`, `{注记}` → `{Remark}` |
+| Keywords | `\textbf{关键词：}` | → `\textbf{Keywords:}` |
+| TikZ node labels | `{中文\\$math$}` inside `\node` | `{事件序列 $S_i$}` → `{Event Seq.\ $S_i$}` |
+| TikZ annotations | `\node[...]{中文}` for labels | `{更新 $\theta$}` → `{Update $\theta$}` |
+| TikZ comments | `% === 中文 ===` | Translate or leave (invisible in PDF) |
+| Table headers | `符号 & 含义` | → `Symbol & Description` |
+| Table cells | Chinese descriptions | Translate cell by cell |
+| Table captions | `\caption{中文}` | Replace; optionally append `\protect\zhcaption{原中文}` |
+| Algorithm caption | `\caption{中文}` | Direct replacement |
+| Algorithm REQUIRE/ENSURE | Chinese text after keyword | Direct replacement |
+| Algorithm comments | `\textbf{// 中文}` | `// Feature extraction` |
+| Algorithm annotations | `$\triangleright$ 中文` | `$\triangleright$ English` |
+| pgfplots titles | `title={(a) 学习率}` | `title={(a) Learning rate}` |
+| pgfplots axis labels | `ylabel={中文}` | Direct replacement |
+| pgfplots legends | `\legend{中文, 中文}` | Direct replacement |
+| Section divider comments | `%====` lines with Chinese | Optional; invisible in PDF |
+
+**Rationale**: These are all layout-constrained visual elements where (1) bilingual display is physically impossible without breaking the layout, and (2) the translation is a 1:1 word mapping with no risk of meaning drift. They should be translated BEFORE the paragraph-by-paragraph bilingual polishing begins (Phase 0 scaffolding step).
+
+**Compile sanity check**: After adding bilingual scaffolding AND replacing all structural elements, compile once to verify no caption/macro errors before batch polishing.
 
 **Submission checklist item**: Before submission, change `\showchinesetrue` → `\showchinesefalse` and verify the PDF contains zero Chinese characters.
 
