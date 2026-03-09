@@ -29,7 +29,7 @@ This repo provides four skills:
 
 ```bash
 cd ~
-git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
+git clone https://github.com/<your-username>/paper-submission-check.git paper-skills
 
 # Install one or more
 cp -r ~/paper-skills/skills/paper-english-polishing ~/.cursor/skills/
@@ -42,7 +42,7 @@ cp -r ~/paper-skills/skills/paper-figure-styling ~/.cursor/skills/
 
 ```powershell
 cd $env:USERPROFILE
-git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
+git clone https://github.com/<your-username>/paper-submission-check.git paper-skills
 
 # Install one or more
 Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-english-polishing" "$env:USERPROFILE\.cursor\skills\"
@@ -222,7 +222,7 @@ paper-submission-check/
 
 ```bash
 cd ~
-git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
+git clone https://github.com/<your-username>/paper-submission-check.git paper-skills
 
 # 安装一个或多个
 cp -r ~/paper-skills/skills/paper-english-polishing ~/.cursor/skills/
@@ -235,7 +235,7 @@ cp -r ~/paper-skills/skills/paper-figure-styling ~/.cursor/skills/
 
 ```powershell
 cd $env:USERPROFILE
-git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
+git clone https://github.com/<your-username>/paper-submission-check.git paper-skills
 
 # 安装一个或多个
 Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-english-polishing" "$env:USERPROFILE\.cursor\skills\"

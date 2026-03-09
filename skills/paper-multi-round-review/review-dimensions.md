@@ -39,8 +39,8 @@ Complete dimension-by-dimension checklists for each reviewer role. Use these as 
 
 Common dataset concerns:
 - **DARPA TC/E3/OpTC**: Synthetic environment, limited number of hosts, specific attack scenarios
-- **LANL**: Real enterprise data, but only authentication events; limited attack diversity
-- **CIC-IDS/CIC-APT-IIoT**: Known labeling issues; some datasets have documented errors in ground truth
+- **Enterprise authentication datasets**: Real enterprise data, but often only authentication events; limited attack diversity
+- **Labeled IDS benchmark datasets**: Known labeling issues; some datasets have documented errors in ground truth
 - **UNSW-NB15**: Synthetic attack generation in controlled lab
 
 ### A4. Domain Baseline Coverage

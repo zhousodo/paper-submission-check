@@ -284,3 +284,134 @@ Tables should generally NOT use heavy coloring. Acceptable uses:
 | Highlight rows | `\rowcolor{acSky!15}` | Use sparingly for 1–2 key rows |
 
 **Rule**: If the paper will be printed, avoid colored table backgrounds entirely. Numbers + bold/underline are sufficient.
+
+---
+
+## 10. Fill Opacity Guidelines
+
+Opacity (transparency) is critical for overlapping visual elements. Using wrong opacity values is one of the most common figure quality issues.
+
+### By Visual Context
+
+| Context | Opacity Range | Default | LaTeX Code |
+|---------|--------------|---------|------------|
+| Confidence/error band | 0.10–0.20 | 0.15 | `fill opacity=0.15` |
+| Radar chart fill (proposed) | 0.15–0.25 | 0.20 | `fill opacity=0.20` |
+| Radar chart fill (baselines) | 0.08–0.15 | 0.10 | `fill opacity=0.10` |
+| Bar chart fill | 0.70–1.0 | 0.75 | `fill=acBlue!75` |
+| Box plot fill | 0.25–0.35 | 0.30 | `fill=acBlue!30` |
+| Scatter plot points | 0.40–0.70 | 0.50 | `opacity=0.5` |
+| Stacked area (bottom layer) | 0.70–0.80 | 0.75 | `fill opacity=0.75` |
+| Stacked area (top layer) | 0.50–0.65 | 0.60 | `fill opacity=0.60` |
+| Legend background (when overlapping data) | 0.80–0.90 | 0.85 | `fill=white, fill opacity=0.85` |
+| Zoom region indicator (dashed rect) | border only | — | `draw=acBlack!50, fill=none` |
+| Heatmap cells | 1.0 (opaque) | 1.0 | — |
+
+### Overlap Rules
+
+When multiple transparent elements overlap:
+
+| Scenario | Guidance |
+|----------|----------|
+| 2 overlapping bands | Use opacity ≤ 0.15; combined region should remain readable |
+| 3+ overlapping bands | Use opacity ≤ 0.10; consider using only top/bottom fill |
+| Scatter with 1000+ points | Opacity 0.3–0.4; rely on density for pattern visibility |
+| Scatter with < 200 points | Opacity 0.6–0.8; individual points should be distinguishable |
+
+### pgfplots Opacity Implementation
+
+```latex
+% Fill opacity (transparent fill, opaque border)
+\addplot[fill=acBlue, fill opacity=0.15, draw=acBlue, line width=1pt] ...;
+
+% Full opacity control (both fill and draw)
+\addplot[acBlue, opacity=0.5] ...;  % affects everything
+
+% Scatter with per-point opacity
+\addplot[only marks, mark=*, acBlue, opacity=0.5, mark size=1pt] ...;
+```
+
+### matplotlib Opacity
+
+```python
+# Fill between (confidence band)
+ax.fill_between(x, y_lower, y_upper, color='#0072B2', alpha=0.15)
+
+# Scatter
+ax.scatter(x, y, c='#0072B2', alpha=0.5, s=10, edgecolors='none')
+
+# Bar
+ax.bar(x, y, color='#0072B2', alpha=0.75, edgecolor='#0060A0')
+```
+
+---
+
+## 11. Contrast Requirements for Figure Elements
+
+Minimum contrast ratios based on WCAG 2.1 guidelines, adapted for academic figures.
+
+### Text Contrast
+
+| Element | Min Contrast Ratio | Target |
+|---------|-------------------|--------|
+| Axis labels (dark on white) | 4.5:1 | 7:1 (AAA) |
+| Tick labels | 4.5:1 | 7:1 |
+| Annotations/callouts | 4.5:1 | 7:1 |
+| Legend text | 4.5:1 | 7:1 |
+| Heatmap cell text (on dark bg) | 4.5:1 | White text: `#FFFFFF` on dark cells |
+| Heatmap cell text (on light bg) | 4.5:1 | Black text: `#000000` on light cells |
+
+### Graphical Object Contrast
+
+| Element | Min Contrast Ratio | Notes |
+|---------|-------------------|-------|
+| Data lines against background | 3:1 | Thicker lines (1.0+ pt) help |
+| Markers against background | 3:1 | Filled markers preferred over hollow |
+| Bar fills against background | 3:1 | Use border lines for extra distinction |
+| Adjacent bars (different methods) | 3:1 between each pair | Test in grayscale |
+| Grid lines vs background | 1.5:1 | Grid should be subtle; too much contrast is distracting |
+
+### Checking Contrast
+
+Tools for verifying contrast ratios:
+- **WebAIM Contrast Checker**: https://webaim.org/resources/contrastchecker/
+- **Color Oracle** (desktop app): Simulates CVD types
+- **Coblis**: https://www.color-blindness.com/coblis-color-blindness-simulator/
+- **Manual**: Convert PDF to grayscale; ensure all series remain distinguishable
+
+### Problem Colors on White Background
+
+| Color | HEX | Contrast vs White | Safe? |
+|-------|-----|-------------------|-------|
+| acBlue | #0072B2 | 5.3:1 | Yes |
+| acOrange | #E69F00 | 2.6:1 | **Marginal** — use with thick lines or filled markers |
+| acGreen | #009E73 | 3.8:1 | Yes |
+| acVermillion | #D55E00 | 3.9:1 | Yes |
+| acPurple | #CC79A7 | 3.0:1 | **Marginal** — avoid for thin lines |
+| acSky | #56B4E9 | 2.5:1 | **Low** — use filled markers; avoid for thin lines on white |
+| acYellow | #F0E442 | 1.3:1 | **Fail** — never use alone on white background |
+
+### Mitigation for Low-Contrast Colors
+
+| Problem Color | Fix |
+|---------------|-----|
+| acYellow on white | Darken to `#BFA800` or use only as fill with dark border |
+| acSky on white | Use filled markers (`mark=*`) not hollow; increase line width to 1.2pt |
+| acOrange on white | Use with solid line + filled marker; avoid dashed |
+| Any color thin line | Increase line width (1.0→1.2pt) to compensate for reduced contrast |
+| Any color on gray bg | Test explicitly; many colors lose contrast on gray |
+
+---
+
+## 12. Color for Statistical Annotations
+
+| Element | Color Rule | Example |
+|---------|-----------|---------|
+| Error bars | Same color as data series | Blue error bars on blue bars |
+| Significance brackets | Black (neutral) | `\draw[thin, black]` |
+| Significance text (\*, \*\*) | Black (neutral) | `\node[font=\scriptsize]` |
+| Confidence bands | Same color as line, at 15% opacity | `fill=acBlue, fill opacity=0.15` |
+| Reference lines (threshold, baseline) | Gray or black, dashed | `acBlack!40, dashed, thin` |
+| Callout arrows | Gray or dark, not colored | `draw=black!60, thin` |
+
+**Rule**: Statistical annotations should be visually subordinate to data. Use neutral colors (black/gray) for brackets and text. Only the data itself should carry the palette colors.

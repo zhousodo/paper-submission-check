@@ -6,39 +6,38 @@ Calibration examples showing what good reviews look like at different verdict le
 
 ## Example 1: Borderline Accept Review (Reviewer B — Methods Expert)
 
-Context: A paper proposing a heterogeneous GNN for cross-modal APT detection with uncertainty-aware alignment.
+Context: A paper proposing a heterogeneous GNN for network anomaly detection with uncertainty-aware alignment.
 
 ```markdown
 # Review — Reviewer B
 Expertise: Graph neural networks, heterogeneous graph learning, uncertainty quantification
 
 ## 1. Summary
-This paper proposes a cross-modal fusion method for APT detection that bridges host
-provenance graphs and network flow data. The core contribution is a five-dimensional
-semantic consistency scoring mechanism that produces continuous confidence scores for
-cross-modal alignment, replacing binary hard matching. The method constructs a
-Subject-Object Attack Coupling Graph (SO-ACG) with directed heterogeneous edges
-encoding attacker/victim roles, and uses confidence-weighted message passing in a
-heterogeneous GNN. Experiments on LANL and CIC-APT-IIoT datasets show strong
-F1 scores (98.89% and 99.08%).
+This paper proposes a cross-modal fusion method for network anomaly detection that bridges
+multi-source heterogeneous data. The core contribution is a multi-factor alignment scoring
+mechanism that produces continuous quality scores for cross-modal alignment, replacing binary
+hard matching. The method constructs a role-aware heterogeneous graph with directed
+heterogeneous edges encoding source/target roles, and uses quality-weighted message passing
+in a heterogeneous GNN. Experiments on Dataset-A and Dataset-B show strong F1 scores
+(95.3% and 96.5%).
 
 ## 2. Strengths
-- **S1** [§4.1]: The five-dimensional confidence scoring is well-designed. Fusing address,
+- **S1** [§4.1]: The multi-factor alignment scoring is well-designed. Fusing spatial,
   temporal, semantic, behavioral, and contextual signals provides a more robust alignment
   than any single dimension. The formulation is clean and the weight decomposition is
   intuitive.
-- **S2** [§4.2]: The subject/object edge distinction is a meaningful modeling choice that
-  captures directional attack semantics. The asymmetric weight splitting (remote: 1.0/0.4,
-  local: 0.5/1.0) is well-motivated from a security perspective.
-- **S3** [§4.3]: Post-softmax confidence scaling is an interesting design choice that
+- **S2** [§4.2]: The role-differentiated edge distinction is a meaningful modeling choice
+  that captures directional semantics. The asymmetric weight splitting (source: 1.0/0.4,
+  target: 0.5/1.0) is well-motivated from the application perspective.
+- **S3** [§4.3]: Post-softmax quality scaling is an interesting design choice that
   preserves the attention competition structure while modulating message amplitudes.
   This is technically cleaner than pre-softmax weighting.
 - **S4** [§5]: The ablation study covers the main contributions (cross-modal fusion,
   uncertainty modulation, temporal encoding, role distinction).
 
 ## 3. Weaknesses
-- **W1** [§4.1] 🟧 Major: The five confidence dimensions and their weights (0.35, 0.10,
-  0.40, 0.15, 0.05) appear to be manually set. There is no sensitivity analysis showing
+- **W1** [§4.1] 🟧 Major: The alignment dimensions and their weights (0.30, 0.15, 0.35,
+  0.15, 0.05) appear to be manually set. There is no sensitivity analysis showing
   how performance changes with different weight configurations. Are these weights
   optimal? Were they tuned, and if so, on what data?
   *Suggestion*: Add a weight sensitivity analysis (e.g., vary each weight ±50% and
@@ -46,10 +45,10 @@ F1 scores (98.89% and 99.08%).
 
 - **W2** [§5.3] 🟧 Major: The ablation study removes components but doesn't isolate them
   sufficiently. For example, removing "cross-modal fusion" simultaneously removes the
-  confidence scoring, the subject/object edges, and the GNN message passing. It would be
+  alignment scoring, the role-differentiated edges, and the GNN message passing. It would be
   more informative to have finer-grained ablations:
-  (a) Replace continuous confidence with binary (hard alignment, confidence=1.0)
-  (b) Replace directed subject/object edges with undirected edges
+  (a) Replace continuous quality scores with binary (hard alignment, score=1.0)
+  (b) Replace directed role-differentiated edges with undirected edges
   (c) Remove temporal encoding only
   These would directly validate each claimed contribution independently.
 
@@ -60,20 +59,20 @@ F1 scores (98.89% and 99.08%).
   that the modulation actually changes gradient magnitudes in practice.
 
 - **W4** [§5] 🟨 Minor: No computational cost comparison with baselines. How much
-  additional time does the five-dimensional scoring and SO-ACG construction add?
+  additional time does the multi-factor scoring and role-aware graph construction add?
 
 ## 4. Questions for Authors
-- **Q1**: How sensitive are the results to the confidence dimension weights? What happens
+- **Q1**: How sensitive are the results to the alignment dimension weights? What happens
   if you set all weights to 0.20 (uniform)?
-- **Q2**: The semantic similarity dimension (f_sem, weight 0.40) dominates. If you remove
+- **Q2**: The semantic similarity dimension (f_sem, weight 0.35) dominates. If you remove
   it entirely, how much does performance drop? This would clarify whether the method's
   strength comes from multi-dimensional scoring or primarily from semantic matching.
-- **Q3**: How many edges are created in the SO-ACG compared to a hard-alignment
-  baseline? What fraction of edges have confidence < 0.5?
+- **Q3**: How many edges are created in the role-aware graph compared to a hard-alignment
+  baseline? What fraction of edges have quality score < 0.5?
 
 ## 5. Missing References
 - ConfGCN (Vashishth et al., 2019) is cited but not compared against as a baseline.
-  Since it also introduces confidence into GNN message passing, a direct comparison
+  Since it also introduces quality weighting into GNN message passing, a direct comparison
   would strengthen the novelty claim.
 
 ## 6. Scores
@@ -81,13 +80,13 @@ F1 scores (98.89% and 99.08%).
 |---------------|-------|-------|
 | Soundness     | 3/4   | Claims mostly supported; weight selection needs justification |
 | Presentation  | 3/4   | Clear writing; good figures; notation consistent |
-| Contribution  | 3/4   | Good problem formulation; novelty in confidence + role edges |
+| Contribution  | 3/4   | Good problem formulation; novelty in alignment scoring + role edges |
 | Overall       | 5/10  | Borderline accept — technically solid, needs stronger ablation |
 | Confidence    | 4/5   | Confident in GNN methodology assessment |
 
 ## 7. Verdict
 Borderline Accept — The problem formulation and overall approach are sound and
-well-motivated. The main concerns are the manually-set confidence weights without
+well-motivated. The main concerns are the manually-set alignment weights without
 sensitivity analysis, and the coarse-grained ablation study. If these are addressed
 in revision, the paper would be a clear accept.
 ```
@@ -103,14 +102,14 @@ Context: Same paper, but this reviewer focuses on experimental methodology pitfa
 Expertise: ML evaluation methodology, statistical rigor, reproducibility
 
 ## 1. Summary
-The paper proposes APT-Fusion for cross-modal APT detection, combining host provenance
-graphs with network flow data through a five-dimensional confidence scoring mechanism.
-The method is evaluated on LANL and CIC-APT-IIoT datasets, reporting F1 scores of
-98.89% and 99.08%.
+The paper proposes ProposedMethod for network anomaly detection, combining multi-source
+heterogeneous data through a multi-factor alignment scoring mechanism. The method is
+evaluated on Dataset-A and Dataset-B, reporting F1 scores of 95.3% and 96.5%.
 
 ## 2. Strengths
 - **S1** [§4]: The problem formulation is well-motivated. The limitations of hard alignment
-  in cross-modal fusion are clearly articulated with concrete examples (DHCP, NAT).
+  in cross-modal fusion are clearly articulated with concrete examples (dynamic
+  addressing scenarios (e.g., DHCP, NAT)).
 - **S2** [§5.1]: Using both temporal and random splits for evaluation is a good practice
   that many papers in this area neglect.
 
@@ -118,22 +117,22 @@ The method is evaluated on LANL and CIC-APT-IIoT datasets, reporting F1 scores o
 - **W1** [§5] ⬛ Critical: No standard deviations or confidence intervals are reported for
   any results. All comparisons are based on single-point estimates. Without variance
   information, it is impossible to determine whether the reported improvements are
-  statistically significant or within random fluctuation. For example, the claimed 4.64%
+  statistically significant or within random fluctuation. For example, the claimed 3.2%
   F1 improvement from cross-modal fusion could be entirely within the noise of a single
   random seed.
   *Required*: Report mean ± std over at least 5 runs with different random seeds. Apply
   a paired statistical test for key comparisons.
 
 - **W2** [§5.1] ⬛ Critical: The paper does not describe how the detection threshold was
-  selected. F1 is threshold-dependent — at what threshold was 98.89% F1 achieved? Was
+  selected. F1 is threshold-dependent — at what threshold was 95.3% F1 achieved? Was
   this threshold selected on the validation set or the test set? If on the test set, this
   constitutes parameter selection bias (Pitfall P5).
   *Required*: Specify threshold selection procedure. Report AUPRC (threshold-free)
   as the primary metric.
 
-- **W3** [§5.1] 🟧 Major: The base rate fallacy is not addressed. At what attack prevalence
-  were these results achieved? If the test set has 10% attacks but real deployment has
-  0.01% attacks, a 1% FPR would generate ~100 false alarms per true detection.
+- **W3** [§5.1] 🟧 Major: The base rate fallacy is not addressed. At what anomaly prevalence
+  were these results achieved? If the test set has 10% anomalies but real deployment has
+  0.01% anomalies, a 1% FPR would generate ~100 false alarms per true detection.
   *Suggestion*: Compute precision at realistic base rates (e.g., 0.01%, 0.1%, 1%)
   and report expected daily false alarm counts for a network of realistic scale.
 
@@ -145,10 +144,10 @@ The method is evaluated on LANL and CIC-APT-IIoT datasets, reporting F1 scores o
   information leaks into training.
 
 - **W5** [§5] 🟧 Major: Only two datasets are used. While they represent different
-  domains (enterprise vs. IIoT), both show near-perfect performance (>98% F1). This
-  raises concerns about whether the method truly generalizes or whether these specific
-  datasets are particularly easy. A third dataset with different characteristics (e.g.,
-  DARPA OpTC for provenance, UNSW-NB15 for network) would strengthen the claims.
+  application domains, both show strong performance (>95% F1). This raises concerns
+  about whether the method truly generalizes or whether these specific datasets are
+  particularly easy. A third established benchmark with different characteristics would
+  strengthen the claims.
 
 - **W6** [§5.2] 🟨 Minor: Baseline implementation details are insufficient. Are baselines
   re-implemented or using original code? Are they using their published optimal
@@ -156,7 +155,7 @@ The method is evaluated on LANL and CIC-APT-IIoT datasets, reporting F1 scores o
 
 ## 4. Questions for Authors
 - **Q1**: What is the detection threshold used for reporting F1? How was it selected?
-- **Q2**: What is the attack prevalence in each dataset's test split?
+- **Q2**: What is the anomaly prevalence in each dataset's test split?
 - **Q3**: Are graph structural features (centrality, etc.) computed on the full graph or
   training subgraph only?
 - **Q4**: How many random seeds were used? What is the variance across runs?
@@ -191,8 +190,8 @@ critical/major weaknesses would make the paper suitable for re-review.
 
 ## Consensus Strengths
 1. Problem formulation is well-motivated (all 4 reviewers agree)
-2. Five-dimensional confidence scoring is a meaningful contribution (Rev A, B, D)
-3. Subject/object edge distinction captures real security semantics (Rev A, B)
+2. Multi-factor alignment scoring is a meaningful contribution (Rev A, B, D)
+3. Role-differentiated edge distinction captures real application semantics (Rev A, B)
 
 ## Consensus Weaknesses
 1. No statistical significance / variance reporting (Rev B, C — both flag as critical)
@@ -211,7 +210,7 @@ Priority-ordered must-fix list:
 1. **Add variance reporting**: Mean ± std over ≥5 runs for all results (Rev B, C)
 2. **Clarify threshold selection**: Specify procedure; add AUPRC metric (Rev C)
 3. **Finer-grained ablation**: Isolate each contribution independently (Rev B)
-4. **Confidence weight sensitivity**: Analyze impact of weight choices (Rev B)
+4. **Alignment weight sensitivity**: Analyze impact of weight choices (Rev B)
 5. **Base rate analysis**: Report precision at realistic prevalence (Rev A, C)
 6. **Normalization procedure**: Confirm no data leakage (Rev C)
 
@@ -244,8 +243,8 @@ We thank Reviewer C for the thorough methodology review. We address each concern
 
 We agree this is a significant gap. We have re-run all experiments with 10 random
 seeds and report mean ± std in revised Tables 3-5. Key results:
-- LANL F1: 98.89 ± 0.31% (original: 98.89%)
-- CIC-APT-IIoT F1: 99.08 ± 0.18% (original: 99.08%)
+- Dataset-A F1: 95.3 ± 0.42% (original: 95.3%)
+- Dataset-B F1: 96.5 ± 0.25% (original: 96.5%)
 
 Paired t-tests confirm our method significantly outperforms all baselines (p < 0.01).
 See revised §5.3 and new Table 6.
@@ -255,7 +254,7 @@ See revised §5.3 and new Table 6.
 The detection threshold was selected on the validation set using F1 maximization.
 We apologize for omitting this detail. We have:
 1. Added explicit threshold selection description in revised §5.1
-2. Added AUPRC as a primary metric (Table 3): LANL 99.12%, CIC 99.96%
+2. Added AUPRC as a primary metric (Table 3): Dataset-A 97.8%, Dataset-B 98.5%
 3. Added full Precision-Recall curves in new Figure 7
 
 ## Re: W3 (Base rate fallacy) — 🟧 Major

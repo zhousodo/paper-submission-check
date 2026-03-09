@@ -31,13 +31,13 @@ Senior researcher with 10+ years in network/system security. Published at USENIX
    - Does the dataset contain realistic benign background traffic?
    - Is the attack-to-benign ratio representative of real environments?
    - DARPA TC/OpTC datasets: known limitations (synthetic environment, limited scale)
-   - LANL: real enterprise data but limited attack diversity
-   - CIC series: known labeling issues (CICIDS2017 has documented errors)
+   - Enterprise authentication datasets: real enterprise data but limited attack diversity
+   - Labeled IDS benchmark datasets: known labeling issues (some have documented ground-truth errors)
 
 4. **Comparison with Security-Specific Baselines**
    - Compared against latest provenance-graph methods (KAIROS 2024, MAGIC 2024, FLASH 2024)?
    - Compared against rule-based methods (HOLMES, SLEUTH) to show ML adds value?
-   - Compared against network-only methods (E-GraphSAGE, etc.)?
+   - Compared against network-only methods (GNN-based flow classifiers, etc.)?
    - Are comparisons using the same datasets and evaluation protocol?
 
 5. **Operational Considerations**

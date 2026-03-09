@@ -52,7 +52,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
 \addplot[mark=*, acBlue] coordinates {(0.1,88) (0.3,93) (0.5,97) (0.7,95) (0.9,91)};
 \addplot[mark=square*, acVermillion] coordinates {(0.1,85) (0.3,89) (0.5,92) (0.7,90) (0.9,87)};
 \addplot[mark=triangle*, acGreen] coordinates {(0.1,82) (0.3,86) (0.5,90) (0.7,88) (0.9,84)};
-\legend{APT-Fusion, Baseline A, Baseline B}
+\legend{YourMethod, Baseline A, Baseline B}
 \end{axis}
 \end{tikzpicture}
 ```
@@ -93,7 +93,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
     bar width=8pt,
     ylabel={F1 Score (\%)},
     ymin=70, ymax=100,
-    symbolic x coords={CICAPT-IIoT, LANL, DARPA},
+    symbolic x coords={Dataset-A, Dataset-B, Dataset-C},
     xtick=data,
     x tick label style={font=\sffamily\footnotesize},
     legend style={at={(0.5,-0.22)}, anchor=north, legend columns=3,
@@ -108,12 +108,12 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
     xmajorgrids=false,
 ]
 \addplot[fill=acBlue, draw=acBlue!80!black] coordinates
-    {(CICAPT-IIoT, 99.08) (LANL, 98.89) (DARPA, 97.5)};
+    {(Dataset-A, 96.5) (Dataset-B, 95.3) (Dataset-C, 97.5)};
 \addplot[fill=acVermillion!75, draw=acVermillion!80!black] coordinates
-    {(CICAPT-IIoT, 92.3) (LANL, 93.7) (DARPA, 89.2)};
+    {(Dataset-A, 92.3) (Dataset-B, 93.7) (Dataset-C, 89.2)};
 \addplot[fill=acGreen!75, draw=acGreen!80!black] coordinates
-    {(CICAPT-IIoT, 88.1) (LANL, 87.4) (DARPA, 85.9)};
-\legend{APT-Fusion, Baseline A, Baseline B}
+    {(Dataset-A, 88.1) (Dataset-B, 87.4) (Dataset-C, 85.9)};
+\legend{YourMethod, Baseline A, Baseline B}
 \end{axis}
 \end{tikzpicture}
 ```
@@ -244,7 +244,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
 % Methods
 \addplot[acBlue, mark=none, line width=1.2pt]
     coordinates {(0,0) (0.001,0.85) (0.01,0.95) (0.05,0.98) (0.1,0.99) (1,1)};
-\addlegendentry{APT-Fusion (AUC=0.9912)}
+\addlegendentry{YourMethod (AUC=0.995)}
 
 \addplot[acVermillion, mark=none, line width=1.0pt, dashed]
     coordinates {(0,0) (0.005,0.70) (0.02,0.88) (0.1,0.95) (0.3,0.98) (1,1)};
@@ -310,7 +310,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
 
 \addplot[acBlue, mark=none, line width=1.2pt]
     coordinates {(0.5,1.0) (0.8,0.98) (0.95,0.95) (0.99,0.90) (1.0,0.85)};
-\addlegendentry{APT-Fusion (AUPRC=0.9896)}
+\addlegendentry{YourMethod (AUPRC=0.985)}
 \end{axis}
 ```
 
@@ -390,7 +390,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
     ylabel={F1 Score (\%)},
     boxplot/draw direction=y,
     xtick={1, 2, 3},
-    xticklabels={APT-Fusion, Baseline A, Baseline B},
+    xticklabels={YourMethod, Baseline A, Baseline B},
     x tick label style={font=\sffamily\footnotesize},
     font=\sffamily\small,
 ]
@@ -479,7 +479,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
 ]
 \addplot[acBlue, fill=acBlue, fill opacity=0.15, line width=1.0pt]
     coordinates {(0,99.1) (60,98.2) (120,100) (180,99.1) (240,100) (300,99.1) (360,99.1)};
-\addlegendentry{APT-Fusion}
+\addlegendentry{YourMethod}
 
 \addplot[acVermillion, fill=acVermillion, fill opacity=0.1, line width=0.8pt, dashed]
     coordinates {(0,92.3) (60,90.5) (120,94.1) (180,95.2) (240,93.8) (300,92.0) (360,92.3)};
@@ -547,7 +547,7 @@ All templates assume the Okabe-Ito palette is defined (see [color-reference.md](
 
 ### When to Use
 - Attack graph / provenance graph examples
-- SO-ACG structure illustration
+- Heterogeneous graph structure illustration
 - Network topology
 
 ### TikZ Template
@@ -723,3 +723,441 @@ fig.savefig('figure.pdf', format='pdf')
 ```python
 plt.rcParams['figure.figsize'] = (7.0, 3.0)  # double-column width
 ```
+
+---
+
+## 18. Shared Legend for Multi-Panel Figures
+
+### When to Use
+- Two or more subfigures share the same series/methods
+- Avoids redundant legends in each panel
+
+### Method 1: `legend to name` (pgfplots — Recommended)
+
+```latex
+\begin{figure*}[!t]
+\centering
+\begin{minipage}[b]{0.48\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\textwidth, height=0.618\textwidth,
+    xlabel={Hyperparameter $\lambda$},
+    ylabel={F1 Score (\%)},
+    ymin=85, ymax=100,
+    grid=major, grid style={dashed, gray!25},
+    legend to name=sharedlegend,
+    legend style={legend columns=4, font=\sffamily\scriptsize,
+                  draw=none, column sep=6pt},
+    every axis plot/.append style={line width=1.0pt, mark size=2.0pt},
+    font=\sffamily\small,
+    tick label style={font=\sffamily\footnotesize},
+    tick align=outside,
+]
+\addplot[mark=*, acBlue] coordinates {(0.1,88) (0.3,93) (0.5,98) (0.7,96) (0.9,92)};
+\addlegendentry{YourMethod}
+\addplot[mark=square*, acVermillion] coordinates {(0.1,85) (0.3,89) (0.5,93) (0.7,91) (0.9,87)};
+\addlegendentry{Baseline A}
+\addplot[mark=triangle*, acGreen] coordinates {(0.1,82) (0.3,86) (0.5,91) (0.7,89) (0.9,84)};
+\addlegendentry{Baseline B}
+\addplot[mark=diamond*, acOrange, dashed] coordinates {(0.1,80) (0.3,84) (0.5,88) (0.7,86) (0.9,81)};
+\addlegendentry{Baseline C}
+\end{axis}
+\end{tikzpicture}
+\par\smallskip{\small\bfseries (a)} {\small Dataset-A}
+\end{minipage}%
+\hfill
+\begin{minipage}[b]{0.48\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\textwidth, height=0.618\textwidth,
+    xlabel={Hyperparameter $\lambda$},
+    ylabel={F1 Score (\%)},
+    ymin=85, ymax=100,
+    grid=major, grid style={dashed, gray!25},
+    every axis plot/.append style={line width=1.0pt, mark size=2.0pt},
+    font=\sffamily\small,
+    tick label style={font=\sffamily\footnotesize},
+    tick align=outside,
+]
+\addplot[mark=*, acBlue] coordinates {(0.1,90) (0.3,94) (0.5,99) (0.7,97) (0.9,93)};
+\addplot[mark=square*, acVermillion] coordinates {(0.1,86) (0.3,90) (0.5,94) (0.7,92) (0.9,88)};
+\addplot[mark=triangle*, acGreen] coordinates {(0.1,83) (0.3,87) (0.5,92) (0.7,90) (0.9,85)};
+\addplot[mark=diamond*, acOrange, dashed] coordinates {(0.1,81) (0.3,85) (0.5,89) (0.7,87) (0.9,82)};
+\end{axis}
+\end{tikzpicture}
+\par\smallskip{\small\bfseries (b)} {\small Dataset-B}
+\end{minipage}
+
+\vspace{4pt}
+\ref{sharedlegend}
+
+\caption{Hyperparameter sensitivity analysis across two datasets.}
+\label{fig:shared_legend}
+\end{figure*}
+```
+
+### Method 2: Manual TikZ Legend Strip
+
+```latex
+% Place after all subfigure panels, before \caption
+\vspace{4pt}
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  \draw[acBlue, line width=1pt] plot[mark=*] coordinates {(0,0)(0.5,0)};
+  \node[right, inner sep=1pt] at (0.55,0) {YourMethod};
+  %
+  \draw[acVermillion, line width=1pt] plot[mark=square*] coordinates {(2.8,0)(3.3,0)};
+  \node[right, inner sep=1pt] at (3.35,0) {Baseline A};
+  %
+  \draw[acGreen, line width=1pt] plot[mark=triangle*] coordinates {(5.6,0)(6.1,0)};
+  \node[right, inner sep=1pt] at (6.15,0) {Baseline B};
+  %
+  \draw[acOrange, dashed, line width=1pt] plot[mark=diamond*] coordinates {(8.4,0)(8.9,0)};
+  \node[right, inner sep=1pt] at (8.95,0) {Baseline C};
+\end{tikzpicture}
+```
+
+### Method 3: matplotlib Shared Legend
+
+```python
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.0, 2.5))
+
+# Plot on both axes (same methods, different data)
+for ax, data, title in [(ax1, data1, '(a) Dataset-A'), (ax2, data2, '(b) Dataset-B')]:
+    ax.plot(x, data['ours'], '-o', color='#0072B2', label='YourMethod')
+    ax.plot(x, data['bl_a'], '-s', color='#D55E00', label='Baseline A')
+    ax.plot(x, data['bl_b'], '-^', color='#009E73', label='Baseline B')
+    ax.set_title(title, fontsize=9)
+
+# Shared legend below both axes
+handles, labels = ax1.get_legend_handles_labels()
+fig.legend(handles, labels, loc='lower center', ncol=3,
+           fontsize=7, frameon=False, bbox_to_anchor=(0.5, -0.02))
+
+fig.savefig('figure.pdf', bbox_inches='tight', pad_inches=0.02)
+```
+
+### Design Rules
+- Generate legend entries in only ONE axis; reference elsewhere
+- `legend columns=-1` makes all entries fit in one row
+- Shared legend saves ~3–5mm vertical space per panel
+- Verify legend line sample is long enough to distinguish dash patterns
+
+---
+
+## 19. Error Bar Templates
+
+### 19a. Error Bars on Bar Chart (pgfplots)
+
+```latex
+\begin{axis}[
+    width=\columnwidth,
+    height=0.55\columnwidth,
+    ybar=2pt,
+    bar width=10pt,
+    ylabel={F1 Score (\%)},
+    ymin=70, ymax=100,
+    symbolic x coords={Dataset-A, Dataset-B, Dataset-C},
+    xtick=data,
+    x tick label style={font=\sffamily\footnotesize},
+    legend style={at={(0.5,-0.25)}, anchor=north, legend columns=3,
+                  font=\sffamily\scriptsize, draw=none, column sep=6pt},
+    font=\sffamily\small,
+    ymajorgrids=true,
+    grid style={dashed, gray!15},
+]
+% error bars: y dir=plus means one-sided (upward from bar top)
+\addplot[fill=acBlue, draw=acBlue!80!black,
+         error bars/.cd, y dir=both, y explicit,
+         error bar style={line width=0.5pt, acBlue!70!black},
+         error mark options={rotate=90, mark size=3pt, line width=0.5pt, acBlue!70!black},
+] coordinates {
+    (Dataset-A, 96.5) +- (0, 0.35)
+    (Dataset-B, 95.3) +- (0, 0.42)
+    (Dataset-C, 97.50) +- (0, 0.68)
+};
+\addlegendentry{YourMethod}
+
+\addplot[fill=acVermillion!75, draw=acVermillion!80!black,
+         error bars/.cd, y dir=both, y explicit,
+         error bar style={line width=0.5pt, acVermillion!70!black},
+         error mark options={rotate=90, mark size=3pt, line width=0.5pt},
+] coordinates {
+    (Dataset-A, 92.30) +- (0, 1.2)
+    (Dataset-B, 93.70) +- (0, 1.5)
+    (Dataset-C, 89.20) +- (0, 2.1)
+};
+\addlegendentry{Baseline A}
+\end{axis}
+```
+
+### 19b. Confidence Band on Line Chart (pgfplots)
+
+```latex
+\begin{axis}[
+    width=\columnwidth,
+    height=0.618\columnwidth,
+    xlabel={Epoch},
+    ylabel={Validation Loss},
+    grid=major, grid style={dashed, gray!25},
+    font=\sffamily\small,
+    tick align=outside,
+    legend style={at={(0.97,0.97)}, anchor=north east,
+                  font=\sffamily\scriptsize, draw=none},
+]
+% Upper bound
+\addplot[name path=upper, draw=none, forget plot]
+    coordinates {(1,0.85) (5,0.60) (10,0.42) (20,0.30) (30,0.25) (50,0.22)};
+% Lower bound
+\addplot[name path=lower, draw=none, forget plot]
+    coordinates {(1,0.75) (5,0.48) (10,0.34) (20,0.24) (30,0.19) (50,0.16)};
+% Shaded band
+\addplot[fill=acBlue, fill opacity=0.15, draw=none, forget plot]
+    fill between[of=upper and lower];
+% Mean line
+\addplot[acBlue, mark=*, mark size=1.5pt, line width=1.0pt]
+    coordinates {(1,0.80) (5,0.54) (10,0.38) (20,0.27) (30,0.22) (50,0.19)};
+\addlegendentry{YourMethod (mean $\pm$ SD)}
+
+% Repeat for baselines with different colors...
+\end{axis}
+```
+
+### 19c. Error Bars on Line Chart (pgfplots)
+
+```latex
+\addplot[acBlue, mark=*, line width=1.0pt,
+         error bars/.cd, y dir=both, y explicit,
+         error bar style={line width=0.4pt},
+         error mark options={rotate=90, mark size=2.5pt, line width=0.4pt},
+] coordinates {
+    (64, 93.09) +- (0, 1.2)
+    (128, 95.50) +- (0, 0.8)
+    (256, 95.3) +- (0, 0.4)
+    (512, 98.95) +- (0, 0.3)
+};
+```
+
+### 19d. matplotlib Error Bars
+
+```python
+# Bar chart with error bars
+methods = ['YourMethod', 'Baseline A', 'Baseline B']
+means = [96.5, 92.30, 88.10]
+stds = [0.35, 1.20, 1.80]
+colors = ['#0072B2', '#D55E00', '#009E73']
+
+bars = ax.bar(methods, means, color=colors, edgecolor=[c+'CC' for c in colors],
+              width=0.6, zorder=3)
+ax.errorbar(methods, means, yerr=stds, fmt='none', ecolor='black',
+            elinewidth=0.5, capsize=4, capthick=0.5, zorder=4)
+ax.set_ylabel('F1 Score (%)', fontsize=9)
+ax.set_ylim(70, 100)
+```
+
+### Design Rules for Error Bars
+- Cap width: proportional to bar width (roughly 40–60% of bar width)
+- Line width: same as axis line (0.4–0.5 pt)
+- Color: same as data series (or black for all, if cleaner)
+- **Always state error bar type in caption** (SD, SEM, 95% CI)
+- For dense line charts (>15 data points), prefer confidence bands over discrete error bars
+
+---
+
+## 20. Statistical Significance Markers
+
+### 20a. Bracket with Stars (pgfplots/TikZ)
+
+```latex
+\begin{axis}[
+    width=\columnwidth,
+    height=0.6\columnwidth,
+    ybar=2pt, bar width=14pt,
+    ylabel={F1 Score (\%)},
+    ymin=70, ymax=105,  % extra headroom for brackets
+    symbolic x coords={Method A, Method B, Method C},
+    xtick=data,
+    font=\sffamily\small,
+    clip=false,  % allow annotations outside axis box
+]
+\addplot[fill=acBlue, draw=acBlue!80!black]
+    coordinates {(Method A, 99.1) (Method B, 92.3) (Method C, 88.5)};
+
+% Significance bracket: Method A vs Method B
+\draw[thin, black] (axis cs:Method A, 100) -- ++(0, 1.5pt)
+    -- (axis cs:Method B, 101.5pt) -- ++(0, -1.5pt);
+\node[font=\sffamily\scriptsize] at (axis cs:{Method A}, 102.5) [xshift=20pt] {**};
+
+% Significance bracket: Method A vs Method C (taller bracket)
+\draw[thin, black] (axis cs:Method A, 103) -- ++(0, 1.5pt)
+    -- (axis cs:Method C, 104.5pt) -- ++(0, -1.5pt);
+\node[font=\sffamily\scriptsize] at (axis cs:{Method B}, 105.5) {***};
+\end{axis}
+```
+
+### 20b. matplotlib Significance Markers
+
+```python
+def add_significance(ax, x1, x2, y, h, text):
+    """Add significance bracket between two bars."""
+    ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=0.5, c='black')
+    ax.text((x1+x2)/2, y+h, text, ha='center', va='bottom', fontsize=7)
+
+# Usage after plotting bars:
+add_significance(ax, 0, 1, 100, 1.5, '**')   # bars at x=0 and x=1
+add_significance(ax, 0, 2, 103, 1.5, '***')  # bars at x=0 and x=2
+```
+
+### Design Rules for Significance Markers
+- Bracket line: thin (0.4–0.5 pt), black
+- Text: centered above bracket, same font as tick labels
+- Stagger brackets vertically for multiple comparisons
+- Innermost comparison closest to bars; outermost highest
+- Leave 2–3% headroom above tallest bar for annotations
+- Use `clip=false` in pgfplots to allow annotations outside axis box
+- Standard notation: ns (p≥0.05), \* (p<0.05), \*\* (p<0.01), \*\*\* (p<0.001)
+
+---
+
+## 21. Broken / Discontinuous Axis
+
+### When to Use
+- Bar chart where one value is much smaller/larger than others
+- Y-axis must start at 0 (bar chart convention) but data clusters in narrow range (e.g., 85–100%)
+- Avoids misleading truncation while keeping detail visible
+
+### pgfplots Approach (Two Stacked Axes)
+
+```latex
+\begin{tikzpicture}
+% Bottom axis (0 to break point)
+\begin{axis}[
+    name=bottom,
+    width=\columnwidth, height=0.15\columnwidth,
+    ybar, bar width=12pt,
+    ymin=0, ymax=20,
+    ytick={0, 10, 20},
+    symbolic x coords={Ours, BL-A, BL-B, BL-C},
+    xtick=data,
+    font=\sffamily\small,
+    tick label style={font=\sffamily\footnotesize},
+    axis x line=bottom,
+    axis y line=left,
+    xticklabels={,,,,},  % hide x labels on bottom
+]
+\addplot[fill=acBlue!75] coordinates {(Ours,0) (BL-A,0) (BL-B,0) (BL-C,15)};
+\end{axis}
+
+% Top axis (break point to max)
+\begin{axis}[
+    at={(bottom.north west)}, anchor=south west,
+    width=\columnwidth, height=0.45\columnwidth,
+    ybar, bar width=12pt,
+    ymin=80, ymax=100,
+    ytick={80, 85, 90, 95, 100},
+    ylabel={F1 Score (\%)},
+    symbolic x coords={Ours, BL-A, BL-B, BL-C},
+    xtick=data,
+    x tick label style={font=\sffamily\footnotesize},
+    font=\sffamily\small,
+    axis x line=top,
+    axis y line=left,
+    ymajorgrids=true,
+    grid style={dashed, gray!15},
+]
+\addplot[fill=acBlue!75, draw=acBlue!80!black] coordinates
+    {(Ours,99.1) (BL-A,92.3) (BL-B,88.5) (BL-C,85.2)};
+\end{axis}
+
+% Break marks (diagonal lines)
+\draw[thick, white] ([xshift=-2mm]bottom.north west) -- ++(4mm,0);
+\draw ($(bottom.north west)+(-1mm,-1.5mm)$) -- ++(2mm,3mm);
+\draw ($(bottom.north west)+(0.5mm,-1.5mm)$) -- ++(2mm,3mm);
+\end{tikzpicture}
+```
+
+### Design Rules for Broken Axis
+- Break marks: two short diagonal lines on the Y-axis at the discontinuity
+- Bottom segment: small, showing 0 baseline
+- Top segment: larger, showing the data range of interest
+- Both segments share the same X-axis categories
+- Alternative: use a single axis with `ymin=80` and note "Y-axis starts at 80" in caption (acceptable for line charts, not bar charts)
+
+---
+
+## 22. Enhanced Inset / Zoom Panel
+
+### When to Use
+- ROC curves clustering near (0, 1) corner
+- Multiple methods with similar performance in a narrow range
+- Convergence curves with interesting behavior in early epochs
+
+### pgfplots Template with Connector
+
+```latex
+\begin{tikzpicture}
+\begin{axis}[
+    name=main,
+    width=\columnwidth, height=\columnwidth,
+    xlabel={False Positive Rate}, ylabel={True Positive Rate},
+    xmin=0, xmax=1, ymin=0, ymax=1,
+    grid=major, grid style={dashed, gray!20},
+    legend style={at={(0.98,0.02)}, anchor=south east,
+                  font=\sffamily\scriptsize, draw=none},
+    font=\sffamily\small,
+    tick align=outside,
+]
+% Main ROC curves
+\addplot[acBlue, line width=1.2pt, mark=none] coordinates {
+    (0,0) (0.001,0.85) (0.01,0.95) (0.05,0.98) (0.1,0.99) (1,1)};
+\addlegendentry{YourMethod (AUC=0.995)}
+\addplot[acVermillion, dashed, line width=1.0pt, mark=none] coordinates {
+    (0,0) (0.005,0.70) (0.02,0.88) (0.1,0.95) (0.3,0.98) (1,1)};
+\addlegendentry{Baseline A (AUC=0.9534)}
+\addplot[acBlack!40, dashed, thin, mark=none] coordinates {(0,0) (1,1)};
+\addlegendentry{Random}
+
+% Zoom region indicator
+\draw[acBlack!50, thin, dashed]
+    (axis cs:0,0.85) rectangle (axis cs:0.15,1.0);
+\end{axis}
+
+% Inset axis (zoomed view)
+\begin{axis}[
+    at={($(main.north west)+(0.25\columnwidth,-0.05\columnwidth)$)},
+    anchor=north west,
+    width=0.45\columnwidth, height=0.45\columnwidth,
+    xmin=0, xmax=0.15, ymin=0.85, ymax=1.0,
+    xlabel={}, ylabel={},
+    font=\sffamily\tiny,
+    tick label style={font=\sffamily\tiny},
+    tick align=outside,
+    axis background/.style={fill=white},
+    axis line style={thin},
+    grid=major, grid style={dashed, gray!15},
+]
+\addplot[acBlue, line width=1.0pt, mark=none] coordinates {
+    (0.001,0.85) (0.005,0.92) (0.01,0.95) (0.05,0.98) (0.1,0.99) (0.15,0.995)};
+\addplot[acVermillion, dashed, line width=0.8pt, mark=none] coordinates {
+    (0.005,0.70) (0.01,0.80) (0.02,0.88) (0.05,0.92) (0.1,0.95) (0.15,0.96)};
+\end{axis}
+
+% Connector lines from zoom region to inset
+\draw[acBlack!30, thin]
+    ($(main.north west)+(0.0\columnwidth,-0.15\columnwidth)$) --
+    ($(main.north west)+(0.25\columnwidth,-0.05\columnwidth)$);
+\draw[acBlack!30, thin]
+    ($(main.north west)+(0.15\columnwidth,0)$) --
+    ($(main.north west)+(0.7\columnwidth,-0.05\columnwidth)$);
+\end{tikzpicture}
+```
+
+### Design Rules for Inset Panels
+- Inset size: 35–50% of main plot width/height
+- Position: typically in the empty region of the main plot (bottom-right for ROC)
+- Border: thin solid line around inset axis
+- Background: white (opaque, to cover main plot grid)
+- Connect: thin dashed lines from zoom rectangle corners to inset corners
+- Font: one step smaller than main plot (`\tiny` or `\scriptsize`)
+- Include grid in inset for precise reading
+- No legend in inset (inherits from main plot)

@@ -1,6 +1,6 @@
 ---
 name: paper-submission-check
-description: Pre-submission quality check for academic papers in LaTeX. Detects and removes AI-generated writing style (em dashes, focal words, -ing chains, negative parallelism, inflated significance), first-person pronoun overuse, symbol errors, capitalization inconsistencies, mixed Chinese/English punctuation, citation format issues, BIB file structural and formatting errors (entry types, title capitalization protection, journal name abbreviation consistency, DOI policies, author name formatting), and content structure problems. Supports Elsevier, IEEE, Springer, ACM templates. Use when reviewing papers before journal or conference submission, removing AI writing traces, checking reference formatting, or when the user mentions paper checking, proofreading, submission preparation, quality review, or AI style removal.
+description: Pre-submission quality check for academic papers in LaTeX. Detects and removes AI-generated writing style (em dashes, focal words, -ing chains, negative parallelism, inflated significance), first-person pronoun overuse, symbol errors, capitalization inconsistencies, mixed Chinese/English punctuation, citation format issues, BIB file structural and formatting errors (entry types, title capitalization protection, journal name abbreviation consistency, DOI policies, author name formatting), content structure problems, table performance marking verification (bold/underline correctness for best/second-best values), reference content authenticity verification (web-based existence and summary accuracy checking for related work tables), and experimental discussion cross-section consistency (ablation grouping vs. discussion text alignment). Supports Elsevier, IEEE, Springer, ACM templates. Use when reviewing papers before journal or conference submission, removing AI writing traces, checking reference formatting, verifying table markings, auditing related work accuracy, checking experimental consistency, or when the user mentions paper checking, proofreading, submission preparation, quality review, AI style removal, table verification, reference verification, or ablation consistency.
 ---
 
 # Paper Pre-Submission Quality Check
@@ -20,9 +20,9 @@ Pre-Submission Check Progress:
 - [ ] Phase 4: Capitalization Consistency
 - [ ] Phase 5: LaTeX-Specific Issues (citation-style-aware)
 - [ ] Phase 6: Grammar & Language Quality
-- [ ] Phase 7: Tables, Figures & Numbers (with cross-reference verification)
-- [ ] Phase 8: Content Structure & Completeness (abstract/introduction/paragraph/keywords/sections)
-- [ ] Phase 9: BIB File & Reference Format Check
+- [ ] Phase 7: Tables, Figures & Numbers (with cross-reference verification and performance marking audit)
+- [ ] Phase 8: Content Structure & Completeness (abstract/introduction/paragraph/keywords/sections/experimental consistency)
+- [ ] Phase 9: BIB File & Reference Format Check (with content authenticity verification)
 - [ ] Phase 10: Final Pre-Submission Checklist
 ```
 
@@ -435,6 +435,43 @@ A comma splice is two independent clauses joined only by a comma. Search for pat
 | Thousands separator | "4554344" | "4,554,344" |
 | Decimal consistency | "0.997" and "0.9984" | Same decimal places in same table |
 
+### Table Performance Marking Verification Protocol
+
+For every performance comparison table (main results, ablation, sensitivity analysis), systematically verify bold (best) and underline (second-best) markings:
+
+**Step-by-step protocol:**
+
+1. **Extract numerical values per column** — list all values for each metric column
+2. **Rank values** — sort to identify true 1st (best) and 2nd (second-best)
+3. **Cross-check markings** against actual ranking:
+   - `\textbf{}` must be on the actual highest value (or lowest if lower-is-better)
+   - `\underline{}` must be on the actual second-highest (or second-lowest)
+4. **Verify every column independently** — a common error is ranking one column correctly but not another
+
+**Tie handling:**
+- Two values tied for best → both should be `\textbf{}`
+- Two values tied for second-best → both should be `\underline{}`
+- When best has a tie, the next distinct value is NOT second-best (it's third)
+
+**Direction-aware columns:**
+- Check for ↑ (higher-is-better) and ↓ (lower-is-better) indicators in headers
+- Verify "best" means highest for ↑ metrics and lowest for ↓ metrics
+- If no indicator, infer from metric semantics (F1↑, FPR↓, Latency↓, Parameters↓)
+
+**Non-metric columns:**
+- Columns that are deterministic properties of the configuration (e.g., "Parameter Count" as a function of hidden dimension, "Training Time" that scales deterministically) should generally NOT have bold/underline markings — they are reference information, not performance outcomes
+
+**Common errors (ranked by frequency):**
+
+| Error Type | Example | Fix |
+|------------|---------|-----|
+| Off-by-one ranking | Underline on 3rd-best, not 2nd-best | Re-rank all values in the column |
+| Bold/underline swap | Best marked as underline, 2nd as bold | Swap the two markings |
+| Direction confusion | Bolding highest parameter count when lower is better | Check ↑/↓ indicator and metric semantics |
+| Missing tie handling | Only one of two identical best values bolded | Bold both tied values |
+| Deterministic column marked | Parameter count bold/underlined | Remove markings from non-metric columns |
+| Stale markings after data update | Values changed but markings not re-checked | Always re-verify after any data change |
+
 ---
 
 ## Phase 8: Content Structure & Completeness
@@ -504,6 +541,37 @@ Pick one term and use throughout:
 - [ ] Introduction gap = Method solution
 - [ ] Method symbols = Experiment parameters
 - [ ] Conclusion claims ⊆ Results data
+
+### 8h. Experimental Discussion Consistency
+
+The Discussion/Analysis section of experiments is a frequent source of inconsistencies. Systematically verify:
+
+**Ablation table vs. Discussion text grouping:**
+
+When the ablation table organizes components into logical tiers or groups (e.g., "Cross-modal alignment", "Training strategy", "Model architecture"), verify that:
+
+- [ ] The Discussion text references the SAME grouping as the table
+- [ ] Each component is attributed to the CORRECT tier/group
+- [ ] Delta values cited in text (e.g., "$\Delta$F1 = -3.67%") match the actual table data
+- [ ] Component contribution descriptions match what the component actually does
+
+| Error Type | Example | Impact |
+|------------|---------|--------|
+| Component miscategorized | Discussing "uncertainty-modulated loss" under "Model architecture" when it belongs under "Training strategy" | Misleads readers about design decisions |
+| Delta value mismatch | Text says "$\Delta$F1 = -5.2%" but table shows -3.67% | Factual error; reviewer will catch |
+| Contribution over-attribution | Claiming a component "contributes the largest gain" when another component has larger delta | Undermines credibility |
+
+**Baseline description accuracy:**
+
+- [ ] Each baseline's description matches its actual method (e.g., a method's acronym prefix meaning "Edge-feature" should not be described as "Efficient")
+- [ ] Baseline evaluation scope differences are explicitly acknowledged (e.g., host-side methods evaluated at HBR granularity vs. session-level NFR methods)
+- [ ] First-use acronym expansion is provided even in the experimental section (readers may jump directly to experiments)
+
+**Discussion language rigor:**
+
+- [ ] Causal claims are justified: "X caused improvement" only when ablation evidence supports it
+- [ ] Comparative statements use correct grammar: "A与B均不同" not "A与B与C不同" (for Chinese); use parallel structure in English
+- [ ] Hedging is appropriate: "suggests" vs "proves" vs "indicates" — matched to evidence strength
 
 ### Self-Citation Anonymization (for blind review)
 
@@ -604,7 +672,51 @@ title = {Efficient {GPU} Computing Using {CUDA} for Deep Learning}
 - [ ] Grouped citations sorted numerically: `\cite{a,b,c}` renders as [6, 8, 10] not [8, 6, 10]
 - [ ] Digital library exports manually verified and corrected
 
-### 9h. Digital Library Export Verification
+### 9h. Reference Content Verification (Related Work Tables)
+
+When the paper contains a comparison/summary table of related work methods, verify both existence and accuracy:
+
+**Step 1: Verify paper existence** — For each cited paper, confirm via web search:
+
+| Verification Method | Priority | When to Use |
+|---------------------|----------|-------------|
+| DOI resolution (doi.org/...) | Highest | When DOI is available |
+| Google Scholar title search | High | Primary search method |
+| DBLP / Semantic Scholar | High | Cross-verification |
+| Publisher site (IEEE Xplore, ACM DL) | Medium | For publisher-specific papers |
+| arXiv search | Medium | For preprints |
+
+**Step 2: Verify bibliographic accuracy:**
+
+- Author names match the actual published paper
+- Venue/journal name is correct and complete
+- Year matches the actual publication year
+- Entry type (@article, @inproceedings, @inbook) matches the publication venue
+- Vague author listings (e.g., "and others") should be replaced with complete author lists
+
+**Step 3: Verify table summary accuracy** — For each paper's row in the comparison table:
+
+| Field to Check | Verification Source | Common Error |
+|----------------|--------------------|--------------| 
+| Data Source | Paper abstract/experiments section | Overgeneralizing (e.g., "flow + packet" when paper only uses flows) |
+| Core Technique | Paper abstract/method section | Mischaracterizing the technique (e.g., "Efficient X" when "E" stands for "Edge-feature") |
+| Key Innovation | Paper abstract/contributions | Inventing innovations not claimed by the original authors |
+
+**Red flags requiring immediate action:**
+
+| Red Flag | Risk | Action |
+|----------|------|--------|
+| Paper not found in any database | May be fabricated or not yet published | Verify DOI; if unverifiable, flag to author |
+| Author names don't match title | BIB entry may be wrong | Cross-check with publisher records |
+| DOI resolves to different paper | Copy-paste error | Correct DOI |
+| Table description contradicts paper abstract | Inaccurate summarization | Rewrite to match actual paper content |
+| Very recent paper from small venue | May not be indexed yet | Not necessarily fake, but note verification difficulty |
+
+**Example of common caught errors:**
+- Table described a method's acronym prefix as "Efficient" → actual paper shows it stands for "Edge-feature" (misinterpreted abbreviation)
+- Table listed a paper's author incorrectly → actual publisher record shows a different first author (auto-generated BIB entries are unreliable)
+
+### 9i. Digital Library Export Verification
 
 **NEVER trust auto-generated BibTeX** from Google Scholar, IEEE Xplore, ACM DL, or DBLP:
 
@@ -645,6 +757,10 @@ Final Submission Checklist:
 - [ ] LaTeX compiles with zero errors and minimal warnings
 - [ ] Spell check completed
 - [ ] BIB file compiles without errors
+- [ ] Table bold/underline markings verified (best/second-best per column)
+- [ ] Related work table references verified for existence and summary accuracy
+- [ ] Experimental discussion consistent with ablation table grouping
+- [ ] All baseline descriptions match actual method names and techniques
 ```
 
 ---
