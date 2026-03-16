@@ -247,9 +247,14 @@ These rules are enforced consistently across all four skills:
 | Pronoun budget: "we" ≤15, "our" ≤8 | Enforced during polishing | Checked in presentation review | — | Final verification |
 | Zero Tier-1 AI phrases | Avoided during rewriting | Flagged if found | — | Hard ban (zero tolerance) |
 | Terminology consistency | Ledger created and maintained | Verified in reviews | Verified in figure legends/captions | Verified in final check |
+| Acronym first-use protocol | Full name at first use | Verified by Reviewer D | — | Systematic inventory check |
 | Number accuracy | Preserved during translation | Cross-checked in review | Preserved in figures | Final cross-reference verification |
+| Equation/variable consistency | Preserved during translation | Checked by Reviewer B | — | Cross-equation variable audit |
+| Algorithm pseudocode style | Algorithm text translated | — | — | Keyword/variable consistency check |
+| Chinese comments allowed | `%` comments preserved | — | — | PDF verified: zero CN in body |
 | LaTeX safety | Commands preserved exactly | — | Float/figure LaTeX validated | Compilation verified |
 | booktabs tables (no vertical lines) | — | Flagged if violated | Enforced and styled | Verified |
+| Table header length | — | — | ≤3 words; abbreviated with notes | Caption conciseness verified |
 
 ---
 
@@ -480,7 +485,12 @@ Meta-Review 初步决定：
 | 代词预算 "we" ≤15, "our" ≤8 | 润色时执行 | 写作评审时检查 | — | 最终验证 |
 | 零 Tier-1 AI 短语 | 改写时避免 | 发现则标记 | — | 硬性禁止 |
 | 术语一致性 | 建立并维护术语表 | 评审中验证 | 图表图例/标题中验证 | 终检中验证 |
+| 缩写首次全称协议 | 首次使用给全称 | Reviewer D 验证 | — | 系统化清查 |
 | 数字准确性 | 翻译时保留 | 评审中交叉核查 | 图表中保留 | 最终交叉引用验证 |
+| 公式/变量一致性 | 翻译时保留 | Reviewer B 检查 | — | 跨公式变量审计 |
+| 算法伪代码规范 | 算法文本翻译 | — | — | 关键字/变量一致性检查 |
+| 中文注释允许保留 | `%` 注释不翻译 | — | — | PDF 验证：正文零中文 |
+| 表头长度 | — | — | ≤3 词；缩写加脚注 | 标题简洁性验证 |
 
 ---
 

@@ -17,6 +17,8 @@ Before any rewrite, lock these invariants:
 - Never invent claims, datasets, baselines, or citations that are not in source text.
 - Preserve author intent; when wording is ambiguous, keep a conservative rewrite and flag a question.
 - Preserve all LaTeX commands and labels (`\label{}`, `\ref{}`, `\cite{}`) exactly unless user explicitly asks to refactor LaTeX.
+- **Chinese comments are allowed**: LaTeX comments (`% 中文注释`) may remain in Chinese — they are invisible in PDF and serve as author notes. Do NOT translate or remove them unless the author explicitly requests it.
+- **Chinese in `\zhpara{}`/`\zhcaption{}` is preserved**: These are part of the bilingual comparison scaffolding and are hidden by `\showchinesefalse` before submission.
 
 ## Workflow
 

@@ -809,6 +809,17 @@ For publisher-specific dimensions, see [publisher-specs.md](publisher-specs.md).
 - Overflow fix: `\resizebox{\columnwidth}{!}{...}` or `tabularx`
 - **Decimal consistency**: same column = same decimal places (99.10%, 98.54%, 97.32%)
 
+### Table Caption & Header Length
+
+| Element | Guideline | Action if Violated |
+|---------|-----------|-------------------|
+| Caption | 1–3 sentences; self-contained but concise | Trim to essential info; move details to main text |
+| Column header | ≤3 words; abbreviate with footnote | Shorten header, add `\tnote{a}` with `threeparttable` |
+| Header wrapping | Max 2 lines; rotate if necessary for narrow columns | Use `\rotatebox{90}{Header}` or abbreviate |
+| Table note | ≤3 lines; explain abbreviations and special markings | If longer, move explanation to main text |
+
+**Caption position**: Table caption ABOVE (`\caption{}` before `\begin{tabular}`); figure caption BELOW.
+
 ---
 
 ## Phase 10: Caption & Label Formatting

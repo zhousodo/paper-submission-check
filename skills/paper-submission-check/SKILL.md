@@ -20,7 +20,7 @@ Pre-Submission Check Progress:
 - [ ] Phase 4: Capitalization Consistency
 - [ ] Phase 5: LaTeX-Specific Issues (citation-style-aware)
 - [ ] Phase 6: Grammar & Language Quality
-- [ ] Phase 7: Tables, Figures & Numbers (with cross-reference verification and performance marking audit)
+- [ ] Phase 7: Tables, Figures, Numbers & Equations (with cross-reference verification, performance marking audit, equation/algorithm verification)
 - [ ] Phase 8: Content Structure & Completeness (abstract/introduction/paragraph/keywords/sections/experimental consistency)
 - [ ] Phase 9: BIB File & Reference Format Check (with content authenticity verification)
 - [ ] Phase 10: Final Pre-Submission Checklist
@@ -192,6 +192,20 @@ Search for Chinese characters in English text:
 
 **All Chinese punctuation in English papers is an error. Zero tolerance.**
 
+### Chinese Content Policy
+
+| Location | Rule | Rationale |
+|----------|------|-----------|
+| LaTeX comments (`% ...`) | **Allowed** — Chinese comments are acceptable | Comments are invisible in PDF; they serve as author notes |
+| `\zhpara{}` / `\zhcaption{}` | **Allowed** — if using bilingual comparison mode from `paper-english-polishing` | Controlled by `\showchinesetrue/false`; hidden in submission PDF |
+| Body text (outside comments) | **Forbidden** — zero Chinese characters in submission PDF | Editors may desk-reject if Chinese appears in English paper |
+| TikZ/figure labels | **Forbidden** — must be translated to English | Visible in PDF |
+| Algorithm text | **Forbidden** — must be translated to English | Visible in PDF |
+| Table cells | **Forbidden** — must be translated to English | Visible in PDF |
+| `%====` section divider comments | **Allowed** — Chinese or English | Invisible in PDF |
+
+**Verification**: Before submission, compile to PDF and search for any Chinese characters (Unicode range `\u4e00-\u9fff`). Only `\zhpara{}`-wrapped content (hidden by `\showchinesefalse`) and LaTeX `%` comments should remain.
+
 ### Dash Errors in LaTeX
 
 | Usage | Correct LaTeX | Wrong |
@@ -241,11 +255,40 @@ Check that ALL section/subsection titles follow ONE consistent style:
 - First mention: full name + abbreviation
 - After first mention: abbreviation only
 
-### Acronyms
+### Acronyms & Terminology First-Use Protocol
 
-- Define every acronym at first use (including in the abstract separately from body)
-- Never start a sentence with an undefined acronym
-- Create a mental or explicit list of all acronyms; verify each is defined
+**Core rule**: Every acronym, abbreviation, and domain-specific term must appear in FULL FORM at its first use, followed by the abbreviation in parentheses. All subsequent uses must use ONLY the abbreviation.
+
+**Systematic verification protocol:**
+
+1. **Build an acronym inventory**: Scan the entire paper for all uppercase sequences (2+ letters) and known abbreviations
+2. **For each acronym, verify**:
+   - [ ] First occurrence in **abstract**: full form + (ABBR) — abstract is self-contained
+   - [ ] First occurrence in **body text**: full form + (ABBR) again — body is independent from abstract
+   - [ ] All subsequent occurrences: abbreviation only (no re-expansion)
+   - [ ] Never used before its definition in each context (abstract / body)
+3. **Sentence-start rule**: Never start a sentence with an undefined acronym; never start with a bare number
+
+**Common acronym errors:**
+
+| Error | Example | Fix |
+|-------|---------|-----|
+| Used before definition | "APT attacks are dangerous. Advanced Persistent Threat (APT)..." | Move definition to first use |
+| Defined but never used again | "Count-Min Sketch (CMS)" appears once, then always "Count-Min Sketch" | Use "CMS" consistently after definition |
+| Defined only in abstract | "AUC" defined in abstract, used undefined in body | Re-define at first body occurrence |
+| Inconsistent form | "GNN" in §3, "Graph Neural Network" in §5 | Use abbreviation after first definition |
+| Overly abbreviated | Defining "HARP-GD-MIL-UCL" — too many nested acronyms | Limit nesting; spell out sub-components when possible |
+| Well-known terms re-defined | Defining "CPU (Central Processing Unit)" in a CS paper | Skip definition for universally known terms (CPU, GPU, API, HTTP) |
+
+**Concept and proper noun consistency:**
+
+| Check | Rule |
+|-------|------|
+| Method names | Same capitalization and form everywhere: "HARP" not "Harp" or "harp" |
+| Dataset names | Match the original publication exactly: "CICIDS2017" not "CIC-IDS-2017" |
+| Metric names | Consistent form: "F1 score" or "F1-score" — pick one |
+| Tool/library names | Official capitalization: "PyTorch" not "Pytorch" or "pytorch" |
+| Venue names | Full official name at first use: "USENIX Security Symposium" not just "USENIX" |
 
 ---
 
@@ -403,6 +446,18 @@ A comma splice is two independent clauses joined only by a comma. Search for pat
 - Use `booktabs` package (`\toprule`, `\midrule`, `\bottomrule`)
 - Every table must be referenced in text
 
+**Table caption and header length:**
+
+| Check | Rule | Common Error |
+|-------|------|--------------|
+| Caption length | 1–3 sentences; self-contained but concise | 5+ sentence captions that replicate the main text |
+| Column header length | ≤3 words per header; use abbreviations + footnote if needed | "The Average Precision Score of All Methods on Dataset X" as a single column header |
+| Column header wrap | Headers should NOT wrap to 3+ lines; shorten or rotate | Multi-line headers that push table body below fold |
+| Header abbreviation | Define abbreviation in table note if header is shortened | Header says "Prec." without footnote defining it |
+| Table note length | ≤3 lines below table; for longer notes, move to main text | Full paragraph below table duplicating the discussion |
+
+**Table caption position rule**: Caption ABOVE the table (`\caption{...}` before `\begin{tabular}`). Figure caption BELOW the figure.
+
 ### Figures
 
 - Vector format (PDF/EPS) for plots, not PNG/JPG
@@ -434,6 +489,50 @@ A comma splice is two independent clauses joined only by a comma. Search for pat
 | Numbers with units together | "5 %" | "5\%" |
 | Thousands separator | "4554344" | "4,554,344" |
 | Decimal consistency | "0.997" and "0.9984" | Same decimal places in same table |
+
+### Equation & Formula Verification
+
+**CRITICAL**: Equations are where subtle errors hide — reviewers will verify them. Systematically check:
+
+**Variable consistency:**
+
+| Check | What to Verify | Common Error |
+|-------|---------------|--------------|
+| Cross-equation consistency | Same variable = same meaning in ALL equations | $d$ means "hash depth" in Eq.(1) but "dimension" in Eq.(5) |
+| Text-equation match | Variables defined in text match equation usage | Text says "$H \in \mathbb{R}^{T \times 2h}$" but equation uses $H \in \mathbb{R}^{n \times d}$ |
+| Subscript/superscript consistency | Index notation uniform | $x_i$ in one equation, $x^{(i)}$ in another for the same concept |
+| Dimensionality match | Matrix/vector dimensions consistent across multiplications | $A \in \mathbb{R}^{n \times m}$ multiplied by $B \in \mathbb{R}^{k \times p}$ where $m \neq k$ |
+
+**Formula correctness:**
+
+- [ ] Every equation compiles without LaTeX errors
+- [ ] Summation/product bounds are explicit: $\sum_{i=1}^{n}$ not $\sum_i$ (unless convention is clear)
+- [ ] Fractions are readable: prefer `\frac{}{}` in display mode, inline use `/` or `\nicefrac`
+- [ ] Parentheses match and use `\left( \right)` for large expressions
+- [ ] Loss functions: all terms defined, weighting coefficients ($\lambda$, $\alpha$) introduced
+- [ ] Gradient/optimization notation consistent: $\nabla$, $\partial$, $\arg\min$
+- [ ] Units consistent where applicable (time in seconds/ms, memory in MB/GB)
+
+**Equation numbering:**
+
+- [ ] All equations referenced in text are numbered: `\begin{equation}` with `\label{eq:...}`
+- [ ] Equations NOT referenced in text: consider unnumbered `\[...\]` or `equation*`
+- [ ] No broken cross-references: search for "(??)" in compiled PDF
+- [ ] Multi-line equations use `align` or `aligned` environment, NOT multiple `equation` blocks
+
+**Algorithm pseudocode style:**
+
+| Check | Rule | Example |
+|-------|------|---------|
+| Keywords | Use consistent keyword convention | `\textbf{Input:}`, `\textbf{Output:}`, `\textbf{for}`, `\textbf{while}`, `\textbf{return}` |
+| Line numbering | All algorithm lines numbered | Use `algorithmic` with `\algsetup{linenosize=\small}` |
+| Input/Output | Clearly specified at top of each algorithm block | `\REQUIRE` and `\ENSURE` in `algorithmic` |
+| Variable naming | Same variable names as in equations and text | If equation uses $\theta$, pseudocode should use $\theta$ (not "params") |
+| Comments | Brief, meaningful; in English for submission version | `\COMMENT{Update parameters}` |
+| Indentation | Consistent; visually clear nesting | Auto-handled by `algorithmic` package |
+| Caption | Descriptive; matches text references | `\caption{Training procedure of HARP}` |
+| Cross-reference | Every algorithm referenced in text | `Algorithm~\ref{alg:...}` |
+| Consistency with equations | Pseudocode operations match mathematical definitions | If Eq.(3) defines loss as $\mathcal{L}$, pseudocode should compute $\mathcal{L}$ |
 
 ### Table Performance Marking Verification Protocol
 
@@ -735,16 +834,45 @@ For the complete reference format guide with examples, see [reference-format-gui
 
 ```
 Final Submission Checklist:
+
+Cross-References & Labels:
 - [ ] All figures are referenced in text
 - [ ] All tables are referenced in text  
 - [ ] All equations are numbered (if referenced) and referenced
-- [ ] All acronyms defined at first use
 - [ ] All \label{} have corresponding \ref{} (and vice versa)
+
+Terminology & Acronyms:
+- [ ] All acronyms defined at first use (abstract + body independently)
+- [ ] No acronym used before its definition
+- [ ] Concept names consistent throughout (same capitalization, same form)
+- [ ] Dataset names match original publication exactly
+- [ ] Method/tool names use official capitalization
+
+Equations & Algorithms:
+- [ ] All equation variables defined in text before or immediately after equation
+- [ ] Variable meaning consistent across all equations (no symbol reuse for different concepts)
+- [ ] Matrix/vector dimensions consistent across multiplications
+- [ ] Algorithm pseudocode: input/output specified, keywords consistent, variables match equations
+- [ ] No "(??)" broken cross-references in compiled PDF
+
+Tables:
+- [ ] Table bold/underline markings verified (best/second-best per column)
+- [ ] Table captions concise (1–3 sentences), positioned ABOVE table
+- [ ] Column headers ≤3 words; abbreviated headers have footnotes
+- [ ] Decimal places consistent within each column
+
+Language & Style:
+- [ ] Tense consistency per section (past for methods/results, present for facts)
+- [ ] Zero Chinese characters in submission PDF body text
+- [ ] Chinese LaTeX comments (% ...) are acceptable and may remain
+- [ ] No orphan/widow lines (single line at top/bottom of page)
+- [ ] No overfull hbox warnings (text overflowing margins)
+- [ ] Spell check completed
+
+Submission Metadata:
 - [ ] \journal{} contains correct target journal name (not template default)
 - [ ] Page limit satisfied
 - [ ] Bibliography formatted per journal style
-- [ ] No orphan/widow lines (single line at top/bottom of page)
-- [ ] No overfull hbox warnings (text overflowing margins)
 - [ ] Author information correct (for non-blind submissions)
 - [ ] Author information removed (for blind submissions)
 - [ ] Supplementary materials prepared if required
@@ -755,9 +883,9 @@ Final Submission Checklist:
 - [ ] Declaration of competing interests
 - [ ] All co-authors have approved the manuscript
 - [ ] LaTeX compiles with zero errors and minimal warnings
-- [ ] Spell check completed
 - [ ] BIB file compiles without errors
-- [ ] Table bold/underline markings verified (best/second-best per column)
+
+Content Verification:
 - [ ] Related work table references verified for existence and summary accuracy
 - [ ] Experimental discussion consistent with ablation table grouping
 - [ ] All baseline descriptions match actual method names and techniques
