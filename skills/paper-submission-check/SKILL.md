@@ -58,6 +58,31 @@ Search for `\documentclass{}` and `\journal{}`:
 - Check if `\journal{}` still contains a **template default** value (e.g., "Nuclear Physics B" in elsarticle template — must be changed)
 - Verify the document class matches the target journal
 
+### 4. Lock Reference Template [CRITICAL — Affects Phase 9]
+
+The reference format MUST match the target publisher exactly. Mismatched reference templates are a top cause of desk rejection.
+
+**Auto-detect and verify:**
+
+| `\documentclass` | Expected `\bibliographystyle` | Reference Rules to Apply |
+|-------------------|-------------------------------|-------------------------|
+| `elsarticle` | `elsarticle-num` or `elsarticle-harv` or `elsarticle-num-names` | Journal names: **full**; Month: optional; DOI: not displayed |
+| `IEEEtran` | `IEEEtran` or `IEEEtranS` | Journal names: **abbreviated (ISO 4)**; Month: **required**; DOI: displayed |
+| `acmart` | Handled by `acmart` class | Journal names: **full**; DOI: **required and displayed** |
+| `svjour3` / `llncs` | Per journal guide | Check specific journal |
+
+**Mismatch detection (must flag as Critical):**
+
+| Mismatch | Risk |
+|----------|------|
+| `\documentclass{elsarticle}` + `\bibliographystyle{IEEEtran}` | **Desk rejection** — format conflict |
+| `\documentclass{IEEEtran}` + full journal names in .bib | **Reviewer complaint** — IEEE requires abbreviated |
+| `\documentclass{elsarticle}` + abbreviated journal names in .bib | **Format violation** — Elsevier uses full names |
+| `\documentclass{IEEEtran}` + missing `month` in .bib entries | **Incomplete references** — IEEE requires months |
+| `\journal{Nuclear Physics B}` (elsarticle template default) | **Desk rejection** — unchanged template value |
+
+Record the detected publisher for use in Phase 9. See [reference-format-guide.md](reference-format-guide.md) §0 for complete template selection guide and publisher migration checklists.
+
 ---
 
 ## Phase 1: Pronoun & Subjectivity Check
@@ -686,6 +711,36 @@ For the detailed structure and writing guide (CARS model, paragraph standards, k
 
 **The reference list is where reviewers frequently find careless errors. Studies show manuscripts with citation errors face 40% higher rejection rates.**
 
+### 9-pre. Apply Publisher-Specific Reference Rules
+
+**Before checking individual entries, verify the bibliography matches the target publisher detected in Phase 0 Step 4.** This is the #1 cause of reference-related rejections.
+
+**Publisher-specific verification:**
+
+| If Publisher = Elsevier | If Publisher = IEEE |
+|------------------------|-------------------|
+| `\bibliographystyle{elsarticle-num}` or `elsarticle-harv` | `\bibliographystyle{IEEEtran}` |
+| Journal names: **ALL full** (not abbreviated) | Journal names: **ALL abbreviated** (ISO 4) |
+| Month: optional in .bib | Month: **required** in .bib (bare macro: `month = jun`) |
+| DOI: include in .bib but `elsarticle-num` won't display it | DOI: include in .bib; `IEEEtran` will display it |
+| Author initials: `A.B. Author` acceptable | Author initials: `A. B. Author` (**space required**) |
+| `\usepackage{natbib}`: **Do NOT add** (elsarticle loads internally) | `\usepackage{cite}`: Recommended for auto-sorting |
+
+**Cross-check ALL journal name entries:**
+
+```
+Scan ALL journal = {...} fields in .bib:
+├── If publisher = Elsevier → verify NONE are abbreviated
+│   ERROR: journal = {IEEE Trans. Knowl. Data Eng.}  ← abbreviated, should be full
+│   CORRECT: journal = {IEEE Transactions on Knowledge and Data Engineering}
+├── If publisher = IEEE → verify ALL are abbreviated
+│   ERROR: journal = {Information Processing & Management}  ← full, should be abbreviated
+│   CORRECT: journal = {Inf. Process. Manag.}
+└── NEVER mix abbreviated and full names in the same bibliography
+```
+
+For the complete template selector, publisher migration checklists, and side-by-side BIB entry examples, see [reference-format-guide.md](reference-format-guide.md) §0.
+
 ### 9a. Structural Integrity
 
 Check every BIB entry for:
@@ -868,6 +923,14 @@ Language & Style:
 - [ ] No orphan/widow lines (single line at top/bottom of page)
 - [ ] No overfull hbox warnings (text overflowing margins)
 - [ ] Spell check completed
+
+Reference Template:
+- [ ] \bibliographystyle{} matches target publisher (elsarticle-num / IEEEtran / etc.)
+- [ ] \documentclass and \bibliographystyle are consistent (no cross-publisher mix)
+- [ ] Journal names ALL follow publisher convention (full for Elsevier/ACM, abbreviated for IEEE)
+- [ ] No mixed abbreviated + full journal names in same bibliography
+- [ ] Month field present in ALL .bib entries (if IEEE)
+- [ ] Author initials have spaces (if IEEE): "J. D." not "J.D."
 
 Submission Metadata:
 - [ ] \journal{} contains correct target journal name (not template default)

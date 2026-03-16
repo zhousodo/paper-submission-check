@@ -4,6 +4,171 @@ Comprehensive reference formatting standards for academic papers targeting top-t
 
 ---
 
+## 0. Reference Template Selector [READ THIS FIRST]
+
+**This is the most important section.** Selecting the wrong reference template or mixing conventions from different publishers is a top cause of desk rejection. Determine your target publisher FIRST, then follow the corresponding rules throughout.
+
+### Step 1: Identify Your Target Publisher
+
+Detect from `\documentclass{}` and `\bibliographystyle{}` in the `.tex` file:
+
+| If you see... | Publisher | Template Family |
+|---------------|-----------|----------------|
+| `\documentclass{elsarticle}` | **Elsevier** | elsarticle |
+| `\documentclass{IEEEtran}` | **IEEE** | IEEEtran |
+| `\documentclass{acmart}` | **ACM** | acmart |
+| `\documentclass{svjour3}` or `\documentclass{llncs}` | **Springer** | svjour3 / LNCS |
+
+### Step 2: Select the Correct Bibliography Configuration
+
+#### Elsevier — Complete LaTeX Configuration
+
+```latex
+\documentclass[preprint,12pt]{elsarticle}
+% For author-year style, use: \documentclass[preprint,12pt,authoryear]{elsarticle}
+
+% Elsevier uses natbib internally — do NOT add \usepackage{natbib}
+% unless using elsarticle-harv (author-year style)
+
+\begin{document}
+% ... paper content ...
+\bibliographystyle{elsarticle-num}    % Numbered style [1], [2], [3]
+% OR
+% \bibliographystyle{elsarticle-harv}  % Author-year style (Smith, 2024)
+% OR
+% \bibliographystyle{elsarticle-num-names} % Numbered + author names: Smith et al. [1]
+\bibliography{refs}
+\end{document}
+```
+
+**Elsevier style variants:**
+
+| Style File | Citation Appearance | Sorting | When to Use |
+|-----------|-------------------|---------|-------------|
+| `elsarticle-num` | [1], [2], [3] | Citation order | Most Elsevier journals (default) |
+| `elsarticle-harv` | (Smith, 2024) | Alphabetical | Journals requiring author-year |
+| `elsarticle-num-names` | Smith et al. [1] | Citation order | Journals wanting names + numbers |
+
+**Which Elsevier style?** Check your journal's **Guide for Authors** page (click "Guide for Authors" in left menu on journal homepage). If no preference stated, use `elsarticle-num`.
+
+#### IEEE — Complete LaTeX Configuration
+
+```latex
+\documentclass[journal]{IEEEtran}
+% For conference: \documentclass[conference]{IEEEtran}
+
+\begin{document}
+% ... paper content ...
+\bibliographystyle{IEEEtran}  % THE official IEEE BibTeX style
+\bibliography{refs}
+\end{document}
+```
+
+**IEEE style variants:**
+
+| Style File | Sorting | Notes |
+|-----------|---------|-------|
+| `IEEEtran` | Citation order (unsorted) | **Recommended for all IEEE submissions** |
+| `IEEEtranS` | Alphabetical | Some IEEE journals; check Guide for Authors |
+| `IEEEtranN` | Citation order + full names | Rarely used |
+| `IEEEtranSN` | Alphabetical + full names | Rarely used |
+
+### Step 3: Apply Publisher-Specific Rules (Critical Differences)
+
+**The following table shows EVERY difference that matters. Getting any of these wrong can cause rejection.**
+
+| Rule | Elsevier | IEEE | Mismatch = Rejection Risk |
+|------|----------|------|--------------------------|
+| **Journal names** | **Full name** (`Information Processing & Management`) | **Abbreviated per ISO 4** (`Inf. Process. Manag.`) | **HIGH** — Reviewers/editors notice immediately |
+| **Author initials** | `A.B. Author` (no space between initials OK) | `A. B. Author` (**space required** between initials) | Medium — BibTeX style usually handles |
+| **Month field** | Optional | **Required** — use bare BibTeX macros: `month = jun` | Medium — Missing months flagged by IEEE |
+| **DOI display** | `elsarticle-num.bst` does **NOT** render DOI | `IEEEtran.bst` renders DOI (if field present) | Low — Include DOI in .bib regardless |
+| **Article title** | Normal text | **Quoted** (handled by style automatically) | Low — Style handles |
+| **et al. threshold** | 3+ authors → et al. | **6+ authors** → et al. | Low — Style handles |
+| **Page range** | `pages = {35--49}` (en-dash) | `pages = {35--49}` (en-dash) | Same for both |
+| **Citation at sentence start** | `Author et al.~\cite{key}` or `The work in~\cite{key}` | `Author et al.~\cite{key}` or `In~\cite{key},` | **HIGH** — Never start with bare `\cite{key}` in numbered style |
+| **`\usepackage{natbib}`** | **Do NOT add** (elsarticle loads it internally) | Not used | Medium — Duplicate package error |
+| **`\usepackage{cite}`** | Compatible | **Recommended** for auto-sorting `[1,3,5]→[1,3,5]` | Low — Cosmetic |
+| **Conference name format** | Full name in booktitle | Full name in booktitle | Same — but digital library exports are ALWAYS wrong |
+| **Bibliography title** | Auto: "References" | Auto: "References" | — |
+
+### Step 4: Switching Between Publishers
+
+When resubmitting a paper from one publisher to another (e.g., Elsevier → IEEE after rejection), change ALL of the following:
+
+**Elsevier → IEEE Migration Checklist:**
+
+```
+- [ ] \documentclass{elsarticle} → \documentclass[journal]{IEEEtran}
+- [ ] \bibliographystyle{elsarticle-num} → \bibliographystyle{IEEEtran}
+- [ ] Remove elsarticle-specific: \journal{}, \begin{frontmatter}...\end{frontmatter}
+- [ ] Add IEEE-specific: \IEEEoverridecommandlockouts (if needed)
+- [ ] ALL journal names in .bib: full → abbreviated (ISO 4)
+      Example: "Information Processing & Management" → "Inf. Process. Manag."
+- [ ] Add month field to ALL .bib entries (IEEE requires it)
+      Format: month = jun (bare macro, no braces/quotes)
+- [ ] Author initials: add spaces ("J.D." → "J. D.")
+- [ ] Keywords: \begin{keyword}...\end{keyword} → \begin{IEEEkeywords}...\end{IEEEkeywords}
+- [ ] Abstract word limit: ≤200 words (IEEE strict)
+- [ ] Recompile and verify: no natbib conflicts, no missing fields
+```
+
+**IEEE → Elsevier Migration Checklist:**
+
+```
+- [ ] \documentclass[journal]{IEEEtran} → \documentclass[preprint,12pt]{elsarticle}
+- [ ] \bibliographystyle{IEEEtran} → \bibliographystyle{elsarticle-num}
+- [ ] Add elsarticle-specific: \journal{Your Target Journal}, \begin{frontmatter}
+- [ ] Remove IEEE-specific: \IEEEoverridecommandlockouts, \IEEEkeywords
+- [ ] ALL journal names in .bib: abbreviated → full
+      Example: "IEEE Trans. Knowl. Data Eng." → "IEEE Transactions on Knowledge and Data Engineering"
+- [ ] \journal{} MUST be changed from template default (NOT "Nuclear Physics B")
+- [ ] Prepare: Highlights, Graphical Abstract, CRediT statement, Cover Letter
+- [ ] Keywords: \begin{IEEEkeywords} → \begin{keyword} with \sep separators
+- [ ] Remove \usepackage{cite} if conflicts with natbib
+- [ ] Recompile and verify: no package conflicts, journal name rendered correctly
+```
+
+### Quick BIB Entry Comparison (Same Paper, Two Formats)
+
+**Elsevier format (.bib):**
+
+```bibtex
+@article{smith2024anomaly,
+  author  = {J. Smith and A.B. Jones and C. Lee},
+  title   = {Anomaly Detection in Streaming Graphs Using {CMS}},
+  journal = {Information Processing & Management},
+  volume  = {61},
+  number  = {3},
+  pages   = {103--120},
+  year    = {2024},
+  doi     = {10.1016/j.ipm.2024.103120},
+}
+```
+
+**IEEE format (.bib) — same paper, different conventions:**
+
+```bibtex
+@article{smith2024anomaly,
+  author  = {J. Smith and A. B. Jones and C. Lee},
+  title   = {Anomaly Detection in Streaming Graphs Using {CMS}},
+  journal = {Inf. Process. Manag.},
+  volume  = {61},
+  number  = {3},
+  pages   = {103--120},
+  month   = mar,
+  year    = {2024},
+  doi     = {10.1016/j.ipm.2024.103120},
+}
+```
+
+**Key differences highlighted:**
+1. `journal`: Full name vs abbreviated
+2. `author`: `A.B.` vs `A. B.` (space between initials)
+3. `month`: Absent vs present (bare macro)
+
+---
+
 ## 1. Entry Type Correctness
 
 The most fundamental error: using the wrong `@type`. Google Scholar, Mendeley, and publisher digital libraries frequently assign incorrect entry types.
