@@ -205,7 +205,7 @@ Before starting, set target ranges (advisory, not hard bans):
 | Experiments | 1-2 | 0-1 |
 | Discussion | 1-2 | 0-1 |
 | Conclusion | 1-2 | 0 |
-| **Total (preferred)** | **≤20** | **≤10** |
+| **Total (preferred)** | **≤15** | **≤8** |
 
 ---
 
@@ -402,8 +402,8 @@ After all polishing, do a final pass. Count:
 | High-risk adjectives/adverbs | | Keep only when evidence-backed | |
 | "not only...but also" | | ≤2 | |
 | Furthermore/Moreover/Additionally | | ≤3 each | |
-| "we" total | | Preferred ≤20 | |
-| "our" total | | Preferred ≤10 | |
+| "we" total | | Preferred ≤15 | |
+| "our" total | | Preferred ≤8 | |
 
 ---
 
@@ -483,8 +483,8 @@ After completing all phases, produce a summary:
 ## Pronoun Usage (final)
 | Pronoun | Count | Budget | Status |
 |---------|-------|--------|--------|
-| we | | Preferred ≤20 | |
-| our | | Preferred ≤10 | |
+| we | | Preferred ≤15 | |
+| our | | Preferred ≤8 | |
 
 ## Remaining Concerns
 - (Any issues that need author decision)

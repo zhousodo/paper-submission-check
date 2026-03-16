@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Multi-Round Review"
+  short_description: "Simulate multi-round peer review with specialized reviewer roles"
+  default_prompt: "Use $paper-multi-round-review to run Round-1 review on @paper.tex and provide a meta-review with prioritized fixes."

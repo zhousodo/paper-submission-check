@@ -20,10 +20,10 @@ Detailed per-section writing patterns for top-tier venue papers. Reference from 
 
 | Component | Budget | What to Write |
 |-----------|--------|---------------|
-| **P**roblem | ≤20% | Specific problem, NOT "With the rapid development of..." |
-| **R**esponse | ~30% | "This paper proposes X, which..." — one clear sentence |
-| **K**ey Results | ~30% | Concrete numbers: AUC, F1, improvement margins, dataset names |
-| **S**ignificance | ~20% | Why it matters; what's unique about the approach |
+| **P**roblem | 15–20% | Specific problem, NOT "With the rapid development of..." |
+| **R**esponse | 25–30% | "This paper proposes X, which..." — one clear sentence |
+| **K**ey Results | 35–40% | Concrete numbers: AUC, F1, improvement margins, dataset names |
+| **S**ignificance | 10–15% | Why it matters; what's unique about the approach |
 
 ### Abstract Rules
 

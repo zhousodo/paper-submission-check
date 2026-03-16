@@ -110,13 +110,21 @@ Please optimize all figures and tables in @paper.tex for readability and venue s
 ### End-to-end workflow example
 
 ```text
-Step 1: Use $paper-english-polishing on @paper.tex.
-Step 2: Use $paper-multi-round-review on the polished draft.
-Step 3: List critical and major fixes only, then revise.
-Step 4: Use $paper-figure-styling to finalize figures/tables and layout.
-Step 5: Use $paper-submission-check on @paper.tex and @refs.bib.
-Step 6: Return a final must-fix checklist before submission.
+Step 1: Use $paper-english-polishing to polish @paper.tex section by section.
+        Output the polishing report and terminology ledger when done.
+Step 2: Use $paper-multi-round-review to review the polished draft.
+        Output all 4 reviewer reports and the meta-review.
+Step 3: List only Critical and Major issues from the meta-review.
+        Revise @paper.tex to address each issue. Output a revision log.
+Step 4: Use $paper-figure-styling to audit and fix all figures and tables in @paper.tex.
+        Output the figure styling checklist.
+Step 5: Use $paper-submission-check to check @paper.tex and @refs.bib.
+        Output the full issue report.
+Step 6: Fix any remaining Critical or Warning issues.
+        Output the final must-fix checklist before submission.
 ```
+
+For the **complete pipeline guide** with stage-gate criteria, decision logic, loop-back rules, and cross-skill data flow, see [PIPELINE.md](PIPELINE.md).
 
 ## Which Skill Should I Use?
 
@@ -177,20 +185,27 @@ paper-submission-check/
 │   │   ├── checklist.md
 │   │   ├── paper-structure-guide.md
 │   │   ├── reference-format-guide.md
-│   │   └── LICENSE
+│   │   ├── LICENSE
+│   │   └── agents/
+│   │       └── openai.yaml
 │   ├── paper-figure-styling/
 │   │   ├── SKILL.md
 │   │   ├── color-reference.md
 │   │   ├── figure-types.md
 │   │   ├── layout-placement.md
-│   │   └── publisher-specs.md
+│   │   ├── publisher-specs.md
+│   │   └── agents/
+│   │       └── openai.yaml
 │   └── paper-multi-round-review/
 │       ├── SKILL.md
 │       ├── reviewer-profiles.md
 │       ├── review-dimensions.md
 │       ├── ml-security-pitfalls.md
 │       ├── multi-model-strategy.md
-│       └── review-examples.md
+│       ├── review-examples.md
+│       └── agents/
+│           └── openai.yaml
+├── PIPELINE.md
 ├── README.md
 └── LICENSE
 ```
@@ -303,13 +318,21 @@ Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-figure-sty
 ### 端到端组合示例
 
 ```text
-第 1 步：用 $paper-english-polishing 润色 @paper.tex。
+第 1 步：用 $paper-english-polishing 逐段润色 @paper.tex。
+        完成后输出润色报告和术语表。
 第 2 步：用 $paper-multi-round-review 评审润色后的稿件。
-第 3 步：只列出 Critical 和 Major 问题并修稿。
-第 4 步：用 $paper-figure-styling 优化图表与排版。
-第 5 步：用 $paper-submission-check 复检 @paper.tex 和 @refs.bib。
-第 6 步：输出最终投稿前 must-fix 清单。
+        输出全部 4 位评审报告和 Meta-Review。
+第 3 步：仅列出 Meta-Review 中的 Critical 和 Major 问题。
+        逐项修改 @paper.tex，输出修订日志。
+第 4 步：用 $paper-figure-styling 审查并修复 @paper.tex 中的所有图表。
+        输出图表样式检查清单。
+第 5 步：用 $paper-submission-check 检查 @paper.tex 和 @refs.bib。
+        输出完整问题报告。
+第 6 步：修复所有剩余的 Critical 和 Warning 问题。
+        输出投稿前终检清单。
 ```
+
+完整的流水线指南（含阶段门控、决策逻辑、回退规则和跨 Skill 数据流），请参见 [PIPELINE.md](PIPELINE.md)。
 
 ## 如何选择 Skill
 
@@ -359,6 +382,7 @@ paper-submission-check/
 │   ├── paper-figure-styling/
 │   ├── paper-multi-round-review/
 │   └── paper-submission-check/
+├── PIPELINE.md          ← 完整流水线编排指南（新增）
 ├── README.md
 └── LICENSE
 ```
