@@ -23,7 +23,7 @@ Detailed per-section writing patterns for top-tier venue papers. Reference from 
 | **P**roblem | 15–20% | Specific problem, NOT "With the rapid development of..." |
 | **R**esponse | 25–30% | "This paper proposes X, which..." — one clear sentence |
 | **K**ey Results | 35–40% | Concrete numbers: AUC, F1, improvement margins, dataset names |
-| **S**ignificance | 10–15% | Why it matters; what's unique about the approach |
+| **S**ignificance | 10–15% | Close with a practical impact statement (e.g., what this enables for practitioners/SOC analysts), NOT a restatement of a technical result |
 
 ### Abstract Rules
 
@@ -34,6 +34,7 @@ Detailed per-section writing patterns for top-tier venue papers. Reference from 
 - No citations in abstract
 - No "our proposed" — use "the proposed" or method name
 - Tense: past for what was done, present for what results show
+- Last sentence MUST be an impact/significance statement, NOT a technical fact repetition. Bad: "The selected events preserve full-view decisions while reducing confidence when removed." Good: "This framework enables security analysts to obtain both detection verdicts and actionable structural evidence in a single forward pass, reducing investigation time from hours to seconds."
 
 ### Abstract Templates
 
@@ -79,6 +80,23 @@ Detailed per-section writing patterns for top-tier venue papers. Reference from 
 | Theoretical | "We provide theoretical guarantees showing that [PROPERTY], formalized as [WHAT] (Proposition X)." |
 | Empirical | "We evaluate [NAME] on [N] datasets against [N] baselines, reporting [SPECIFIC METRIC IMPROVEMENTS]." |
 
+### Contribution Item Conciseness (P1 — reviewers scan contributions before reading further)
+
+Each numbered contribution MUST satisfy ALL of:
+
+| Rule | Threshold | Rationale |
+|------|-----------|-----------|
+| **Length** | ≤ 2–3 sentences (< 80 words) | Top-venue contributions are scannable; >100-word items read as mini-paragraphs |
+| **Verb-led** | First word is an action verb | Active voice signals clear ownership ("We propose...", NOT "A novel framework that...") |
+| **Evidence pointer** | One specific reference: "(Table X)", "(Theorem Y)", "(Section Z)" | Reviewers verify claims by jumping to evidence |
+| **Single focus** | One idea per item | If a contribution covers both method AND evaluation, split into two items |
+
+**Bad example** (too long, mixed concerns):
+> We propose a multi-task GNN architecture that jointly performs entity detection and subgraph identification using a shared backbone with separate prediction heads, and we further introduce an edge-type embedding mechanism that encodes four categories of system-call relationships, and ablation experiments on SAGA and THEIA demonstrate that each component contributes...
+
+**Good example** (concise, verb-led, evidence pointer):
+> We propose a multi-task GNN architecture that jointly detects malicious entities and identifies attack-relevant subgraphs through shared backbone features with task-specific heads (Section 4.1, Table 4).
+
 ---
 
 ## Related Work
@@ -100,8 +118,8 @@ Structure each theme as:
 ### Rules
 
 - Each paragraph discusses 3-5 related works under one theme
-- End each theme with limitations that motivate the proposed work
-- Final paragraph: synthesize across all themes, state what's missing
+- **EACH subsection MUST end with an explicit gap→bridge sentence**: "[Specific limitation of these methods]. [Proposed method] addresses this by [mechanism]." — not just a vague "limitations exist"
+- Final paragraph: synthesize across ALL themes, state what's collectively missing, and directly motivate the proposed method
 - Use PAST tense for what prior work did ("proposed", "introduced", "demonstrated")
 - Use PRESENT tense for still-true facts ("GNNs are computationally expensive")
 - For numbered citation style: `Author et al.~\cite{key} proposed...` or `The work in~\cite{key} proposed...`
@@ -214,6 +232,17 @@ Structure each theme as:
 - Each limitation: what, why it matters, potential mitigation
 - Separate "Discussion" (interpret results) from "Limitations" (honest shortcomings)
 - At least 3 concrete limitations
+
+### "So What" Elevation (P1 — Discussion must go beyond restating numbers)
+
+Discussion MUST answer these questions — reviewers judge whether the authors understand their own work's significance:
+
+| Question | What to Write | Bad Example | Good Example |
+|----------|---------------|-------------|--------------|
+| **Community impact** | What do these results mean for the broader research field? | "Table 5 shows HARP achieves 0.95 F1." | "The consistent benefit of joint detection-attribution training suggests these tasks share an inductive bias — a design principle applicable beyond provenance graphs." |
+| **Design principles** | Which design decisions proved most impactful and why? | "The ablation shows subgraph loss helps." | "Subgraph supervision regularizes the GNN backbone toward structurally coherent representations, which explains why it improves detection even without being directly rewarded for detection accuracy." |
+| **Practical implications** | How would a practitioner use these findings? | "The method is useful." | "A SOC analyst can use the attributed subgraph to trace lateral movement chains in under 10 seconds, replacing manual log correlation that typically takes 2–4 hours." |
+| **Future directions** | What open problems does this work reveal? | "Future work will improve the method." | "The gap between heuristic and learned subgraph quality on dense graphs (Table 6) suggests that edge-level supervision may need architectural changes beyond message-passing GNNs." |
 
 ---
 

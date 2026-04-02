@@ -89,7 +89,7 @@ Requirements:
 1. Execute Phases 0-11 in order.
 2. Output a sentence-level diff table (Original / Revised / Reason) for each paragraph.
 3. Maintain a terminology ledger and output the final version when done.
-4. Check pronoun counts (we ≤ 15, our ≤ 8).
+4. Check pronoun counts (we ≤ 5, our ≤ 3).
 5. Preserve Chinese LaTeX comments (% lines) as-is.
 ```
 
@@ -407,7 +407,7 @@ Copy-Item -Recurse -Force "$src\paper-submission-check"    "$dst\"
 1. 按 Phase 0-11 顺序完整执行。
 2. 每段输出句级 diff 表（原文 / 修改 / 理由）。
 3. 维护术语表，完成后输出最终版。
-4. 检查代词计数（we ≤ 15, our ≤ 8）。
+4. 检查代词计数（we ≤ 5, our ≤ 3）。
 5. 中文 LaTeX 注释（% 开头的行）保留不动。
 ```
 

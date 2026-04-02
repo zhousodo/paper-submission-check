@@ -200,14 +200,14 @@ Before starting, set target ranges (advisory, not hard bans):
 
 | Section | "we" budget | "our" budget |
 |---------|-------------|-------------|
-| Abstract | 0-1 | 0 |
-| Introduction | 2-3 | 1-2 |
-| Contributions list | 1-3 (standard) | 0 |
-| Method | 3-5 (for derivations) | 0-1 |
-| Experiments | 1-2 | 0-1 |
-| Discussion | 1-2 | 0-1 |
-| Conclusion | 1-2 | 0 |
-| **Total (preferred)** | **≤15** | **≤8** |
+| Abstract | 0 | 0 |
+| Introduction | 0-1 | 0 |
+| Contributions list | 1 (standard) | 0 |
+| Method | 1-2 (for derivations) | 0-1 |
+| Experiments | 0-1 | 0 |
+| Discussion | 0-1 | 0 |
+| Conclusion | 0 | 0 |
+| **Total (preferred)** | **≤5** | **≤3** |
 
 ---
 
@@ -404,8 +404,8 @@ After all polishing, do a final pass. Count:
 | High-risk adjectives/adverbs | | Keep only when evidence-backed | |
 | "not only...but also" | | ≤2 | |
 | Furthermore/Moreover/Additionally | | ≤3 each | |
-| "we" total | | Preferred ≤15 | |
-| "our" total | | Preferred ≤8 | |
+| "we" total | | Preferred ≤5 | |
+| "our" total | | Preferred ≤3 | |
 
 ---
 
@@ -485,8 +485,8 @@ After completing all phases, produce a summary:
 ## Pronoun Usage (final)
 | Pronoun | Count | Budget | Status |
 |---------|-------|--------|--------|
-| we | | Preferred ≤15 | |
-| our | | Preferred ≤8 | |
+| we | | Preferred ≤5 | |
+| our | | Preferred ≤3 | |
 
 ## Remaining Concerns
 - (Any issues that need author decision)

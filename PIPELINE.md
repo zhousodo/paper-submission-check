@@ -53,7 +53,7 @@ This document defines the **recommended execution order**, **stage-gate criteria
 **Stage gate — proceed to Stage 2 when**:
 - [ ] All sections translated and polished (no Chinese remaining in body text for EN-only mode)
 - [ ] Terminology ledger finalized — every concept uses one chosen term
-- [ ] Pronoun counts within budget: "we" ≤15, "our" ≤8
+- [ ] Pronoun counts within budget: "we" ≤5, "our" ≤3
 - [ ] Zero Tier-1 AI phrases detected
 - [ ] LaTeX compiles without errors
 
@@ -244,7 +244,7 @@ These rules are enforced consistently across all four skills:
 
 | Rule | Stage 1 | Stage 2 | Stage 3 | Stage 4 |
 |------|---------|---------|---------|---------|
-| Pronoun budget: "we" ≤15, "our" ≤8 | Enforced during polishing | Checked in presentation review | — | Final verification |
+| Pronoun budget: "we" ≤5, "our" ≤3 | Enforced during polishing | Checked in presentation review | — | Final verification |
 | Zero Tier-1 AI phrases | Avoided during rewriting | Flagged if found | — | Hard ban (zero tolerance) |
 | Terminology consistency | Ledger created and maintained | Verified in reviews | Verified in figure legends/captions | Verified in final check |
 | Acronym first-use protocol | Full name at first use | Verified by Reviewer D | — | Systematic inventory check |
@@ -375,7 +375,7 @@ Yes, but set it to "English revision / camera-ready" mode (light polishing). Sta
 **阶段门控——满足以下条件后进入阶段 2**：
 - [ ] 所有章节翻译/润色完成
 - [ ] 术语表已定稿
-- [ ] 代词计数达标："we" ≤15, "our" ≤8
+- [ ] 代词计数达标："we" ≤5, "our" ≤3
 - [ ] 零 Tier-1 AI 短语
 - [ ] LaTeX 编译无报错
 
@@ -482,7 +482,7 @@ Meta-Review 初步决定：
 
 | 规则 | 阶段 1 | 阶段 2 | 阶段 3 | 阶段 4 |
 |------|--------|--------|--------|--------|
-| 代词预算 "we" ≤15, "our" ≤8 | 润色时执行 | 写作评审时检查 | — | 最终验证 |
+| 代词预算 "we" ≤5, "our" ≤3 | 润色时执行 | 写作评审时检查 | — | 最终验证 |
 | 零 Tier-1 AI 短语 | 改写时避免 | 发现则标记 | — | 硬性禁止 |
 | 术语一致性 | 建立并维护术语表 | 评审中验证 | 图表图例/标题中验证 | 终检中验证 |
 | 缩写首次全称协议 | 首次使用给全称 | Reviewer D 验证 | — | 系统化清查 |

@@ -93,21 +93,21 @@ Count total occurrences of `\bwe\b` and `\bour\b` (excluding comments and code):
 
 | Pronoun | Recommended Max (full paper) | Action if exceeded |
 |---------|-----------------------------|--------------------|
-| "we" | ≤15 | Replace excess with passive voice or "this paper" |
-| "our" | ≤8 | Replace with "the proposed" / "the" |
-| "us" | ≤3 | Replace with passive constructions |
+| "we" | ≤5 | Replace excess with passive voice or "this paper" |
+| "our" | ≤3 | Replace with "the proposed" / "the" / method name |
+| "us" | ≤1 | Replace with passive constructions |
 
 ### Section-Specific Rules
 
 | Section | "we/our" Guidance |
 |---------|-------------------|
-| Abstract | Max 1-2; prefer "this paper proposes" |
-| Introduction | Max 2-3 for contributions; "This paper proposes..." preferred for opening |
-| Contributions list | "We propose..." is standard and acceptable |
-| Method | Keep for formula derivations ("we compute..."); replace elsewhere with passive |
+| Abstract | 0; prefer "this paper proposes" |
+| Introduction | Max 1 for contribution statement; "This paper proposes..." preferred for opening |
+| Contributions list | "We propose..." acceptable but limit to 1 per list |
+| Method | Max 1-2 for derivations ("we compute..."); replace elsewhere with passive |
 | Experiments | Prefer passive: "Experiments were conducted..." |
-| Results/Discussion | Replace "our method" → "the proposed method" or method name |
-| Conclusion | Prefer "This paper proposed..." or passive |
+| Results/Discussion | Replace "our method" → "the proposed method" or method name; 0 "our" |
+| Conclusion | Prefer "This paper proposed..." or passive; 0 "we" |
 | Future Work | "we" is acceptable for describing future plans |
 
 ### The "our proposed X" Rule
@@ -229,7 +229,12 @@ Search for Chinese characters in English text:
 | Table cells | **Forbidden** — must be translated to English | Visible in PDF |
 | `%====` section divider comments | **Allowed** — Chinese or English | Invisible in PDF |
 
-**Verification**: Before submission, compile to PDF and search for any Chinese characters (Unicode range `\u4e00-\u9fff`). Only `\zhpara{}`-wrapped content (hidden by `\showchinesefalse`) and LaTeX `%` comments should remain.
+**Verification (P0 — submitting with Chinese visible = desk rejection):**
+
+1. **Toggle check**: Search for `\showchinesetrue` in the preamble — it MUST be changed to `\showchinesefalse` before submission
+2. **Compile and inspect**: After setting `\showchinesefalse`, compile to PDF and search for any Chinese characters (Unicode range `\u4e00-\u9fff`)
+3. **Zero tolerance**: Only LaTeX `%` comments (invisible in PDF) may contain Chinese. If ANY Chinese appears in the PDF body, figure, table, or caption, it is a critical error
+4. **Spot-check blue text**: If using bilingual scaffolding (`\zhpara{}`), verify that NO blue Chinese paragraphs appear in the submission PDF
 
 ### Dash Errors in LaTeX
 
@@ -486,19 +491,50 @@ A comma splice is two independent clauses joined only by a comma. Search for pat
 ### Figures
 
 - Vector format (PDF/EPS) for plots, not PNG/JPG
-- Captions should be self-contained (understandable without reading main text)
 - Font size in figures should be readable (not too small after scaling)
 - Every figure must be referenced in text
 - Consistent color scheme across all figures
 
+### Table/Figure Caption Self-Containedness (P1 — reviewers read captions BEFORE body text)
+
+**CRITICAL**: Reviewers routinely scan figures and tables before reading the paper. Every caption MUST be independently understandable without referring to the main text.
+
+**Self-containedness checklist for EACH caption**:
+
+- [ ] **What**: States what the figure/table shows (not just "Results of experiments")
+- [ ] **How**: Briefly explains the experimental setup or visualization method
+- [ ] **Key takeaway**: Highlights the main finding visible in the figure/table
+- [ ] **Abbreviations**: Defines any abbreviation not universally known (or references "see §X" for complex notation)
+- [ ] **Bold/underline**: If table has performance markings, caption explains the convention ("Bold: best; underline: second-best")
+
+| Bad Caption | Good Caption |
+|-------------|--------------|
+| "Ablation results." | "Ablation study on SAGA dataset. Each row removes one component from the full model. Bold: best per column. Subgraph supervision contributes the largest detection gain (+5.6% F1)." |
+| "Comparison with baselines." | "Detection performance (AUC, F1) on three DARPA datasets. HARP (Full) is compared against 6 baselines under identical temporal splits. Bold: best; underline: second-best." |
+| "Architecture overview." | "Overview of the HARP architecture. Entity behavior sequences are encoded by a bidirectional GRU, then processed by a 2-layer GATv2 with edge-type embeddings. Three task heads share the GNN backbone." |
+
 ### Number Cross-Reference Verification
 
-**CRITICAL**: Verify that every number mentioned in the text matches its source:
+**CRITICAL**: Numbers are cited in FOUR locations — any mismatch between them is a fatal credibility error that reviewers will catch.
 
-- Numbers in abstract must match numbers in tables/results
-- Dataset statistics in text (e.g., "4,554,344 communications") must match Table values
-- Claimed improvements in text ("49 percentage points higher") must be verifiable from tables
-- Model names and their associated numbers must be consistent
+**Four-point verification protocol** (check ALL four):
+
+| Location | Role | What to Verify |
+|----------|------|---------------|
+| 1. **Abstract** | First impression | AUC, F1, AP, improvement margins match Results tables |
+| 2. **Introduction contributions** | Promise | Metric claims in contribution items match Results tables |
+| 3. **Results tables** | Source of truth | All other locations must defer to these values |
+| 4. **Conclusion** | Final impression | Numbers must exactly match Results tables |
+
+**Systematic checklist**:
+
+- [ ] Extract EVERY metric number from Abstract → verify each against Results tables
+- [ ] Extract EVERY metric number from Introduction contributions → verify against tables
+- [ ] Extract EVERY metric number from Conclusion → verify against tables
+- [ ] Dataset statistics in text (e.g., "4,554,344 communications") must match Table values
+- [ ] Claimed improvements (e.g., "49 percentage points higher") must be arithmetically verifiable from tables
+- [ ] Decimal precision consistency: if Abstract says "0.998 AUC" but table shows "0.9982", decide on rounding convention and apply uniformly
+- [ ] Model/method names associated with numbers must be consistent (don't attribute Baseline A's score to Baseline B)
 
 | Check | Example Error |
 |-------|---------------|
@@ -544,6 +580,37 @@ A comma splice is two independent clauses joined only by a comma. Search for pat
 - [ ] Equations NOT referenced in text: consider unnumbered `\[...\]` or `equation*`
 - [ ] No broken cross-references: search for "(??)" in compiled PDF
 - [ ] Multi-line equations use `align` or `aligned` environment, NOT multiple `equation` blocks
+
+**Equation punctuation (P0 — reviewers treat missing punctuation as carelessness):**
+
+Display equations are grammatical parts of sentences and MUST carry sentence punctuation. Missing punctuation on 2–3 equations signals low attention to detail.
+
+- [ ] Every display equation ends with a period (`.`) or comma (`,`) following sentence grammar
+- [ ] Punctuation is placed INSIDE the math environment, before `\end{equation}` or `\]`
+- [ ] Multi-line equations (`align`): punctuation on the LAST line only
+- [ ] If the sentence continues after the equation, use a comma; if the equation ends the sentence, use a period
+- [ ] Inline equations: no extra punctuation needed (sentence flow handles it)
+
+```latex
+% CORRECT — equation ends a sentence
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\text{det}} + \lambda\,\mathcal{L}_{\text{sub}}.
+\end{equation}
+
+% CORRECT — sentence continues after equation
+The loss is defined as
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\text{det}} + \lambda\,\mathcal{L}_{\text{sub}},
+\end{equation}
+where $\lambda$ controls the trade-off.
+
+% WRONG — no punctuation
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\text{det}} + \lambda\,\mathcal{L}_{\text{sub}}
+\end{equation}
+```
+
+**Systematic check**: Scan every `\end{equation}`, `\end{align}`, `\end{aligned}`, and `\]` — the line immediately before MUST contain `.` or `,` as the last non-whitespace character before the closing delimiter.
 
 **Algorithm pseudocode style:**
 
@@ -609,6 +676,7 @@ For every performance comparison table (main results, ablation, sensitivity anal
 - [ ] No citations in abstract
 - [ ] No undefined abbreviations (define in abstract even if defined in body)
 - [ ] First sentence is NOT generic ("With the rapid development of...")
+- [ ] Last sentence provides impact/significance — NOT a restatement of a technical fact; good closings: "This enables SOC analysts to...", "These results demonstrate that X is practically achievable for Y"
 - [ ] Numbers in abstract match numbers in results tables
 
 ### 8b. Introduction Structure (CARS Model)
@@ -619,7 +687,7 @@ Verify the introduction follows the three-move structure:
 - [ ] **Move 2 (Establish Niche)**: Specific gap/limitation identified (1 paragraph)
 - [ ] **Move 3 (Occupy Niche)**: "This paper proposes..." + contributions list + outline (1–2 paragraphs)
 - [ ] Move 2 → Move 3 transition is natural (gap directly motivates the proposed method)
-- [ ] Contributions: 3–5 numbered items, each specific and measurable
+- [ ] Contributions: 3–5 numbered items, each ≤2–3 sentences (NOT mini-paragraphs >100 words), verb-led ("We propose...", "We demonstrate..."), with one quantifiable evidence pointer (table/figure/theorem reference)
 - [ ] Paper outline paragraph references all sections with `\ref{}`
 
 ### 8c. Paragraph & Sentence Structure
@@ -640,10 +708,10 @@ Verify the introduction follows the three-move structure:
 
 ### 8e. Section-Specific Structure
 
-- [ ] **Related Work**: Organized thematically (not laundry list) + each theme has summary→limitations→citations + ends with gap summary paragraph that directly motivates the proposed method
+- [ ] **Related Work**: Organized thematically (not laundry list) + each theme has summary→limitations→citations + **EACH subsection** ends with an explicit gap→bridge sentence ("These methods [specific limitation] → [proposed method] addresses this by [mechanism]") + final paragraph synthesizes across ALL themes to directly motivate the proposed method
 - [ ] **Method**: All symbols defined at first use + notation table (if >10 symbols) + method overview figure + core intuition in plain language + algorithm pseudocode + design choice justifications + time/space complexity analysis
 - [ ] **Experiments**: Baselines use published defaults (stated explicitly) + runs averaged with std + dataset statistics table + metrics mathematically defined + results interpreted (not just presented) + ablation study + fair comparison (same hardware, same splits, same parameters)
-- [ ] **Discussion**: Result interpretation (not repetition) + comparison with ≥2 prior methods + mechanism explanation (WHY it works) + ≥3 specific limitations + broader implications
+- [ ] **Discussion**: Result interpretation (not repetition) + comparison with ≥2 prior methods + mechanism explanation (WHY it works) + ≥3 specific limitations + broader implications + **"So what" elevation**: what do these results mean for the community? What design principles emerge? What practical value does this offer practitioners? (Discussion that only restates table numbers is a P1 weakness)
 - [ ] **Limitations**: Present (in Discussion or Conclusion) — specific, not vague; each limitation names a concrete dataset, scenario, or parameter constraint
 - [ ] **Conclusion**: Multi-paragraph (2–4) + strongest takeaway first + NOT a copy of the abstract + answers Introduction's research question + specific future work + no new information + no overclaiming
 
@@ -657,6 +725,30 @@ Pick one term and use throughout:
 | "graph stream" / "streaming graph" / "graph streams" | Pick one form |
 | "dataset" / "data set" / "benchmark" | Be consistent |
 | "TON_IoT" / "TON-IoT" / "TON\_IoT" | Match the original paper's name with `\_` in LaTeX |
+
+### Compound-Modifier Hyphenation Consistency (P2)
+
+Compound modifiers before a noun require a hyphen; the same words in noun/predicate position do not. Inconsistent hyphenation is a professionalism signal — reviewers notice.
+
+**Systematic check**: For each compound term, search all occurrences and verify the hyphen matches its grammatical role.
+
+| Adjective Position (hyphenated) | Noun/Predicate Position (no hyphen) |
+|--------------------------------|-------------------------------------|
+| entity-level detection | detection at the entity level |
+| event-level attribution | attribution at the event level |
+| graph-based method | a method based on graphs |
+| stop-gradient technique | the stop gradient is applied |
+| real-time monitoring | monitoring in real time |
+| multi-task learning | learning with multiple tasks |
+| edge-type embedding | embedding for edge types |
+
+**Common inconsistencies to scan**:
+- [ ] "entity-level" vs "entity level" — verify all occurrences match position
+- [ ] "event-level" vs "event level"
+- [ ] "stop-gradient" vs "stop gradient"
+- [ ] "multi-task" vs "multi task" (always hyphenated as prefix)
+- [ ] "full-batch" vs "full batch"
+- [ ] Method-specific compounds unique to the paper
 
 ### 8g. Cross-Section Consistency
 
@@ -747,7 +839,15 @@ Check every BIB entry for:
 
 1. **Matching braces**: Every `@type{key,` must have a closing `}`
 2. **No nested entries**: One entry must be fully closed before the next begins
-3. **Required fields present**: `title`, `author`, `year` at minimum
+3. **Required fields present per entry type** (minimum fields vary by type):
+
+| Entry Type | Required Fields | Common Missing Field |
+|------------|----------------|---------------------|
+| `@article` | `title`, `author`, `year`, `journal`, `volume` | `pages` (strongly recommended) |
+| `@inproceedings` | `title`, `author`, `year`, `booktitle`, `pages` | `pages` — MUST include for published proceedings |
+| `@misc` / arXiv | `title`, `author`, `year`, `eprint` or `howpublished` | `eprint` number |
+| `@book` | `title`, `author`/`editor`, `year`, `publisher` | `publisher` |
+| `@phdthesis` | `title`, `author`, `year`, `school` | `school` |
 4. **No trailing comma after last field** (some BibTeX implementations fail)
 
 ### 9b. Entry Type Correctness
@@ -920,6 +1020,7 @@ Language & Style:
 - [ ] Tense consistency per section (past for methods/results, present for facts)
 - [ ] Zero Chinese characters in submission PDF body text
 - [ ] Chinese LaTeX comments (% ...) are acceptable and may remain
+- [ ] `\showchinesefalse` is set in preamble (if using bilingual scaffolding); compiled PDF verified zero blue Chinese paragraphs
 - [ ] No orphan/widow lines (single line at top/bottom of page)
 - [ ] No overfull hbox warnings (text overflowing margins)
 - [ ] Spell check completed
@@ -952,6 +1053,7 @@ Content Verification:
 - [ ] Related work table references verified for existence and summary accuracy
 - [ ] Experimental discussion consistent with ablation table grouping
 - [ ] All baseline descriptions match actual method names and techniques
+- [ ] Every table/figure caption is self-contained (understandable without reading main text; includes what, how, key takeaway)
 ```
 
 ---
@@ -976,8 +1078,8 @@ After running all checks, produce a structured report:
 - Suggestion (optional): XX
 
 ## Pronoun Statistics
-- "we" count: XX (threshold: ≤15) [OK/OVER]
-- "our" count: XX (threshold: ≤8) [OK/OVER]
+- "we" count: XX (threshold: ≤5) [OK/OVER]
+- "our" count: XX (threshold: ≤3) [OK/OVER]
 
 ## Critical Issues
 1. [Line XX] BIB entry missing closing brace → fix brace structure

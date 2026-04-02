@@ -826,11 +826,12 @@ For publisher-specific dimensions, see [publisher-specs.md](publisher-specs.md).
 
 ### Caption Rules
 
-1. **Self-contained**: readable without main text; include what, how, key takeaway
+1. **Self-contained (P1 — reviewers read captions BEFORE body text)**: Every caption must be independently understandable. Include: (a) what the figure/table shows, (b) brief experimental setup, (c) key takeaway/finding, (d) definition of any non-obvious abbreviation. A reviewer who reads ONLY the caption should understand the figure's message.
 2. **End with period**; figure caption below, table caption above
 3. **`\label` immediately after `\caption`** on consecutive lines
 4. **Panel references in caption**: `(a) Dataset-A; (b) Dataset-B` — in text: `Fig.~\ref{fig:x}(a)`
 5. Caption format auto-handled by document class (Fig./TABLE/Figure:) — do NOT manually format; see [publisher-specs.md](publisher-specs.md) for per-publisher styles
+6. **Performance table captions**: Must state the marking convention — "Bold: best result per column; underline: second-best"
 
 ### Panel Label Style Per Venue
 
